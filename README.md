@@ -1,3 +1,3 @@
 # CS50-Final
 Final collaborative project for Harvard CS50.
-## Concept
+**Students**: _MariooC14_, ~~Szazlo~~, 
