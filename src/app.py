@@ -27,9 +27,9 @@ def index():
         password = form.password.data
         db = get_db()
         try:
+            session["email"] = email
             db.execute("""INSERT INTO customers () VALUES ()""", ())
             db.commit()
-            session["newsignup"] = username
             return redirect("userdetails")
         except IntegrityError:
             form.username.errors.append("Username is already taken")
