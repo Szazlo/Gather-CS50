@@ -1,10 +1,49 @@
-body {
+:root {
+  --brandcolour: #70B2F3;
+  --hval: 50px;
+}
+
+body, html {
   background-color: #2D2D3F;
   color: #FFFFFF;
+  height: 100vh;
   }
 
+header {
+  position: fixed;
+  padding: 10px 0px 10px 0px;
+  top: 0;
+  width: 100%;
+  /* Height of the footer*/ 
+  height: var(--hval);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding-top: var(--hval);
+  padding-bottom: 20px;
+  }
+
+footer {
+  position: fixed;
+  padding: 10px 10px 10px 10px;
+  bottom: 0;
+  width: 100%;
+  /* Height of the footer*/ 
+  height: 20px;
+  background: var(--brandcolour);
+  display: flex;
+  align-items: center;
+}
+
 .logotext {
-  color: #70B2F3;
+  color: var(--brandcolour);
   font-size: 2.5em;
   font-family: 'Dancing Script', cursive;
   font-weight: 300;
@@ -12,16 +51,16 @@ body {
   }
 
 a {
-  color: #70B2F3;
+  color: var(--brandcolour);
   }
 
 #submit {
     border:none;
     border-radius:1.5rem;
     padding: 0.5rem 1rem;
-    width: 10%;
+    width: 8rem;
     cursor: pointer;
-    background: #70B2F3;
+    background: var(--brandcolour);
     color: #fff;
     font-weight: 500;
 }
