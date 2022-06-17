@@ -3,6 +3,7 @@ import os
 import sqlite3
 DATABASE = os.path.join(os.path.abspath(os.path.dirname(__file__)), "app.db")
 
+
 def get_db():
     if "db" not in g:
         g.db = sqlite3.connect(DATABASE,
@@ -10,6 +11,7 @@ def get_db():
         )
         g.db.row_factory = sqlite3.Row
     return g.db
+
 
 def close_db(e=None):
     db = g.pop("db", None)

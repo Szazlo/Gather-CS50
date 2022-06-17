@@ -1,0 +1,34 @@
+body {
+  background-color: #2D2D3F;
+  color: #FFFFFF;
+  }
+
+.logotext {
+  color: #70B2F3;
+  font-size: 2.5em;
+  font-family: 'Dancing Script', cursive;
+  font-weight: 300;
+  text-align: center;
+  }
+
+a {
+  color: #70B2F3;
+  }
+
+#submit {
+    border:none;
+    border-radius:1.5rem;
+    padding: 0.5rem 1rem;
+    width: 10%;
+    cursor: pointer;
+    background: #70B2F3;
+    color: #fff;
+    font-weight: 500;
+}
+
+#email {
+    padding: 0.5rem 1rem;
+    border: 1px solid #6A6A6A;
+    border-radius: 1.5rem;
+    background-color: transparent;
+}

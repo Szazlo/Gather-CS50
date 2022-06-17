@@ -1,5 +1,26 @@
 {% extends "base.html" %}
 
 {% block main_content %}
-
+<header class="logotext">Gather</header>
+<main>
+    <div class="container">
+            <div class="text-center mb-3">
+                <span class="regtop">
+                <h1>Try for <b>Free!</b></h1>
+                <p>By signing up, I agree to the Gather <a href="">Privacy Policy</a> and <a href="">Terms of Services</a>.</p>
+                </span>
+                <form action="" method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+                    <!-- {{ form.email.label }} -->
+                    {{ form.email(placeholder="example@domain.com") }}
+                    <br />
+                    {% for error in form.email.errors %}
+                        {{ error }}
+                    {% endfor %}
+                    <br />
+                    {{ form.submit() }}
+                </form>
+            </div>
+    </div>
+</main>
 {% endblock %}
