@@ -21,8 +21,10 @@ Session(app)
 @app.route("/")
 def index():
     form = indexform()
+    registered = False
     if form.validate_on_submit():
         email = form.email.data
+        password = form.password.data
         db = get_db()
         try:
             db.execute("""INSERT INTO customers () VALUES ()""", ())
@@ -31,5 +33,5 @@ def index():
             return redirect("userdetails")
         except IntegrityError:
             form.username.errors.append("Username is already taken")
-    return render_template("index.html", form=form)
+    return render_template("index.html", form=form, registered=registered)
 

@@ -71,3 +71,11 @@ a {
     border-radius: 1.5rem;
     background-color: transparent;
 }
+
+input{
+  color: white;
+  padding: 0.5rem 1rem;
+  border: 1px solid #6A6A6A;
+  border-radius: 1.5rem;
+  background-color: transparent;
+}

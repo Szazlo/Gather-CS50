@@ -16,6 +16,14 @@
                         {{ error }}
                     {% endfor %}
                     <br />
+                    {% if  registered == True %}
+                        {{ form.password(placeholder="Password") }}
+                        <br />
+                        {% for error in form.password.errors %}
+                            {{ error }}
+                        {% endfor %}
+                        <br />
+                    {% endif %}
                     {{ form.submit() }}
                 </form>
             </div>

@@ -7,5 +7,10 @@ from wtforms import *
 from wtforms.validators import *
 
 class indexform(FlaskForm):
-    email = StringField("Email Address", validators=[InputRequired()])
+    email = StringField(validators=[InputRequired()])
     submit = SubmitField("Sign up")
+
+class login(FlaskForm):
+    email = StringField(validators=[InputRequired()])
+    password = PasswordField(validators=[InputRequired()])
+    submit = SubmitField("Sign In")
