@@ -16,7 +16,7 @@
                         {{ error }}
                     {% endfor %}
                     <br />
-                    {% if  registered == True %}
+                    {% if registered == True %}
                         {{ form.password(placeholder="Password") }}
                         <br />
                         {% for error in form.password.errors %}
