@@ -1,13 +1,16 @@
 {% extends "base.html" %}
 
+{% block title %}
+    Gather
+{% endblock %}
+
 {% block main_content %}
 <main>
     <div class="container">
         <div class="text-center">
             <h1>Try for <b>free!</b></h1>
             <form action="/" method="POST" >
-                 {{ form.hidden_tag() }}
-                 {{ form.submit() }}
+                <button type="submit" class="btn btn-primary">Sign up!</button>
              </form>
          </div>
     </div>
