@@ -52,7 +52,6 @@ def index():
         # Redirect to register page.
         return redirect("/register")
 
-
             
 @app.route("/dashboard")
 def dashboard():
@@ -97,7 +96,12 @@ def register():
             db.execute("INSERT INTO users (username, email, password, firstName, lastName) VALUES (?, ?, ?, ?, ?)", 
                                           (username, email, hashed_password, firstName, lastName))
             db.commit()
+            
+            # Test if user was inserted
             print((db.execute("SELECT id FROM users WHERE username = ?", (username,)).fetchall())["username"])
+            
+            # TODO: Add user to session
             session["username"] = (db.execute("SELECT id FROM users WHERE username = ?", (username,)).fetchall())["username"]
+
             return redirect("/")
 
