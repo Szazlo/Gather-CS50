@@ -1,6 +1,7 @@
-from flask import g
+from flask import g, current_app
 import os
 import sqlite3
+from flask.cli import with_appcontext
 DATABASE = os.path.join(os.path.abspath(os.path.dirname(__file__)), "app.db")
 
 
