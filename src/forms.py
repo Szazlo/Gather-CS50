@@ -6,8 +6,13 @@ from flask_wtf import FlaskForm
 from wtforms import *
 from wtforms.validators import *
 
-class indexform(FlaskForm):
-    email = StringField(validators=[InputRequired()])
+
+class registerForm(FlaskForm):
+    firstName = StringField("First Name", [validators.DataRequired()])
+    lastName = StringField("Last Name", [validators.DataRequired()])
+    username = StringField("Username", [validators.DataRequired()])
+    email = EmailField(validators=[InputRequired(), Email()])
+    password = PasswordField(validators=[InputRequired(), Length(min=8)])
     submit = SubmitField("Sign up")
 
 class login(FlaskForm):
