@@ -8,7 +8,7 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         try:
-            if session["id"]:
+            if session["email"]:
                 return redirect("/login")
         except KeyError:
             return redirect("/login")

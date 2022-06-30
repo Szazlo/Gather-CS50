@@ -60,9 +60,9 @@ def index():
 
         print("Checking for session id")
         try:
-            if session["id"]:
+            if session["email"]:
                 print("Session id found")
-                print(session["id"])
+                print(session["email"])
                 return redirect("/dashboard")
         except:
             print("No user logged in")
