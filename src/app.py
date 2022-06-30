@@ -41,7 +41,7 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         try:
-            if session["id"]:
+            if session["email"]:
                 print("User is logged in")
         except KeyError:
             return redirect("/login")
@@ -74,7 +74,7 @@ def index():
 def dashboard():
     """Dashboard page"""
     # Get user's id from session
-    user_id = session["id"]
+    user_id = session["email"]
     # Get user's name from database
     username = db.execute("SELECT username FROM users WHERE email = ?", (user_id,)).fetchone()[0]
 
@@ -122,7 +122,7 @@ def register():
             db.commit()
             
             # Add user to session
-            session["id"] = form.email.data
+            session["email"]= form.email.data
 
             return redirect("/")
 
@@ -148,7 +148,7 @@ def Login():
                 if check_password_hash(user[0][2], password):
                     # Add user to session
                     print("Added user to session")
-                    session["id"] = email
+                    session["email"]= email
                     print("Redirecting to dashboard")
                     return redirect("/")
                 else:
@@ -164,5 +164,5 @@ def Login():
 def logout():
     """Logout page"""
     # Remove user from session
-    session.pop("id", None)
+    session.pop("email", None)
     return redirect("/")
