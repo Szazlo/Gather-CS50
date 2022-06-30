@@ -1,0 +1,34 @@
+{% extends "layout.html"%}
+
+{% block title %} 
+    Login
+{% endblock %}
+
+{% block main_content %}
+<main>
+    <div class="container">
+        <div class="text-center">
+            <h1>Login</h1>
+            <form action="/login" method="post">
+                {{ form.hidden_tag() }}
+                {{ form.email(placeholder="name@domain.com") }}
+                <br />
+                {% for error in form.email.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+                <br />
+                {{ form.password(placeholder="Password") }}
+                <br />
+                {% for error in form.password.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+                <br />
+                {{ error }}
+                <br>
+                {{ form.submit() }}
+                
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
