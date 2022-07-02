@@ -31,12 +31,16 @@ header {
   margin-right: 20%;
   }
 
-.welcomepage p:last-of-type {
+.welcomepage p:last-of-type, .loginpage p:last-of-type {
   margin-top: 2em;
 }
 
 .welcomepage div {
   height: 2em;
+}
+
+.loginpage h1, .registerpage h1 {
+  margin-bottom: 1em;
 }
 
 main {

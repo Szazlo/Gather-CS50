@@ -8,6 +8,7 @@
 <main>
     <div class="container">
         <div class="text-center">
+            <div class="loginpage">
             <h1>Login</h1>
             <form action="/login" method="post">
                 {{ form.hidden_tag() }}
@@ -26,8 +27,9 @@
                 {{ error }}
                 <br>
                 {{ form.submit() }}
-                
             </form>
+            <p> Don't have an account? <a href="/register">Sign up!</a></p>
+        </div>
         </div>
     </div>
 
