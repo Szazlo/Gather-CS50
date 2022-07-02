@@ -100,17 +100,24 @@ def register():
             username = db.execute("SELECT username FROM users WHERE username = ?", (form.username.data,)).fetchall()
 
             if len(username) == 1:
-                return render_template("register.html", form=form, error="Username already exists")
+                form.username.errors.append("Username already exists")
+                return render_template("register.html", form=form)
             
             username = str(form.username.data)
 
             email = db.execute("SELECT email FROM users WHERE email = ?", (form.email.data,)).fetchall()
             if len(email) == 1:
-                return render_template("register.html", form=form, error="Email already exists")
+                form.email.errors.append("Email already exists")
+                return render_template("register.html", form=form)
 
             email = str(form.email.data)
 
             password = form.password.data
+
+            if form.confirmPassword.data != password:
+                form.confirmPassword.errors.append("Passwords do not match")
+                return render_template("register.html", form=form)
+            
             # Hash password
             print("Hashing password")
             hashed_password = str(generate_password_hash(password))
