@@ -21,6 +21,24 @@ header {
   justify-content: center;
 }
 
+#logoremain{
+    background: transparent;
+    border: none;
+}
+
+.welcomepage > p {
+  margin-left: 20%;
+  margin-right: 20%;
+  }
+
+.welcomepage p:last-of-type {
+  margin-top: 2em;
+}
+
+.welcomepage div {
+  height: 2em;
+}
+
 main {
   display: flex;
   align-items: center;
@@ -44,17 +62,19 @@ footer {
 
 .logotext {
   color: var(--brandcolour);
-  font-size: 2.5em;
+  font-size: 3em;
   font-family: 'Dancing Script', cursive;
   font-weight: 300;
   text-align: center;
+  text-decoration: none;
+  padding-top: 2%;
   }
 
 a {
   color: var(--brandcolour);
   }
 
-#submit {
+#submit, .welcomepage button {
     border:none;
     border-radius:1.5rem;
     padding: 0.5rem 1rem;

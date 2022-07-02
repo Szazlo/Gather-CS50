@@ -8,7 +8,7 @@
 <main>
     <div class="container">
         <div class="text-center">
-            <h1>Register</b></h1>
+            <h1><b>Register</b></h1>
             <form action="/register" method="POST" >
                 {{ form.hidden_tag() }}
                 {{ form.firstName(placeholder="First Name") }}
@@ -24,10 +24,11 @@
                 {% endfor %}
                 <br />
                 {{ form.username(placeholder="username") }}
+                <br />
                 {% for error in form.username.errors %}
                     <p class="error">{{ error }}</p>
                 {% endfor %}
-                <p>E-mail</p>
+                <br />
                 {{ form.email(placeholder="name@domain.com") }}
                 <br />
                 {% for error in form.email.errors %}
