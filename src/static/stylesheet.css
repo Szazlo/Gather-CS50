@@ -76,6 +76,7 @@ footer {
 
 a {
   color: var(--brandcolour);
+  text-decoration: none;
   }
 
 #submit, .welcomepage button {
