@@ -92,7 +92,7 @@ def dashboard():
     #Failsafe for if the user is not in the database but the session is still active
     if username == None:
         return redirect("/logout")
-        
+
     return render_template("dashboard.html", username=username)
 
 
@@ -133,13 +133,31 @@ def register():
             email = str(form.email.data)
 
             password = form.password.data
+            passwordErrors = 0
+            if not any(char.isdigit() for char in password):
+                passwordErrors += 1
+                form.password.errors.append("Password must contain at least one number")
+            if not any(char.isalpha() for char in password):
+                passwordErrors += 1
+                form.password.errors.append("Password must contain at least one letter")
+            if not any(char.isupper() for char in password):
+                passwordErrors += 1
+                form.password.errors.append("Password must contain at least one uppercase letter")
+            if not any(char.islower() for char in password):
+                passwordErrors += 1
+                form.password.errors.append("Password must contain at least one lowercase letter")
+            if not any(not char.isalnum() for char in password):
+                passwordErrors += 1
+                form.password.errors.append("Password must contain a symbol")
 
+            if passwordErrors > 0:
+                return render_template("register.html", form=form)
+                
             if form.confirmPassword.data != password:
                 form.confirmPassword.errors.append("Passwords do not match")
                 return render_template("register.html", form=form)
             
             # Hash password
-            print("Hashing password")
             hashed_password = str(generate_password_hash(password))
             # Insert user into database
             print("Inserting user into database")
@@ -162,11 +180,11 @@ def Login():
         
         if form.validate_on_submit():
             # Get user's id from database
-            print("Submitted data")
+
             email = str(form.email.data)
-            print(f"Email is {email}")
+
             password = str(form.password.data)
-            print(f"Password is {password}")
+
             user = db.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchall()
             print(user)
 

@@ -3,11 +3,11 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE users; 
 (
-    username TEXT PRIMARY KEY,
+    email TEXT NOT NULL PRIMARY KEY,
+    username TEXT ,
     password TEXT NOT NULL,
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL,
-    email TEXT NOT NULL,
+    firstName TEXT NOT NULL,
+    lastName TEXT NOT NULL,
     verified BOOLEAN NOT NULL DEFAULT 0,
     admin BOOLEAN NOT NULL DEFAULT 0,
 );
