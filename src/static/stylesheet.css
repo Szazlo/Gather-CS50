@@ -39,6 +39,10 @@ header {
   height: 2em;
 }
 
+.error {
+  margin-bottom: 0px;
+}
+
 .loginpage h1, .registerpage h1 {
   margin-bottom: 1em;
 }
