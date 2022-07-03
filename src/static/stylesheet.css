@@ -46,16 +46,24 @@ header {
 
 .termstyle {
   display: flex;
+  justify-content: center;
+}
+
+#tandcbox {
+  margin-right: 1em;
 }
 
 input[type=checkbox] {
-  color: #FFFFFF;
+  background-color: transparent;
 }
 
 .loginpage h2, .registerpage h2 {
   margin-bottom: 1em;
 }
 
+label {
+  font-size: 0.8em;
+}
 
 main {
   display: flex;

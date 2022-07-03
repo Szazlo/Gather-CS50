@@ -79,9 +79,9 @@
                 {% else %}
                     <br>
                 {% endfor %}
-                <br />
                 <div class="termstyle">
-                {{ form.tandcbox(placeholder="I have read and agree to the privacy policy and terms of service.") }}
+                {{ form.tandcbox() }}
+                {{ form.tandcbox.label() }}
                 </div>
                 <br />
                 {{ form.submit() }}
