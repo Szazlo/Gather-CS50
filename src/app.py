@@ -3,6 +3,7 @@ from pipes import Template
 import re
 from urllib import response
 from functools import wraps
+from django.http import HttpResponse
 from django.shortcuts import render
 from flask import Flask, render_template, request, make_response, redirect, session, url_for, g
 from flask_session import Session
@@ -78,10 +79,13 @@ def dashboard():
     user_id = session["email"]
 
     # Check if user has is verified
-    # TODO
-    
-    # Get user's name from database
-    username = db.execute("SELECT username FROM users WHERE email = ?", (user_id,)).fetchone()[0]
+    username = db.execute("SELECT username FROM unverifiedUsers WHERE email = ?", (user_id,)).fetchone()
+    if username:
+        # The user is not verified and needs to verify their account to see the real dashboard
+        return render_template("dashboard.html", username="unverified user")
+
+    # Get user's name from the main database
+    username = db.execute("SELECT username FROM users WHERE email = ?", (user_id,)).fetchone()
 
     return render_template("dashboard.html", username=username)
 
@@ -110,7 +114,8 @@ def register():
             
             username = str(form.username.data)
 
-            email = db.execute("SELECT email FROM users JOIN unverifiedUsers ON users.email=unverifiedUsers.email WHERE email = ?", (form.email.data,)).fetchall()
+            email = db.execute("SELECT users.email FROM users JOIN unverifiedUsers ON users.email = unverifiedUsers.email WHERE users.email = ?", 
+                              (form.email.data,)).fetchall()
             if len(email) != 0:
                 form.email.errors.append("Email already exists")
                 return render_template("register.html", form=form)
@@ -184,4 +189,4 @@ def logout():
 def emailVerification():
     """Email verification page"""
 
-    return render_template("emailVerification.html")
+    return render_template("EmailVerification.html")
