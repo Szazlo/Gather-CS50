@@ -3,6 +3,7 @@ from pipes import Template
 import re
 from urllib import response
 from functools import wraps
+from django.shortcuts import render
 from flask import Flask, render_template, request, make_response, redirect, session, url_for, g
 from flask_session import Session
 from flask_wtf import FlaskForm
@@ -75,6 +76,10 @@ def dashboard():
     """Dashboard page"""
     # Get user's id from session
     user_id = session["email"]
+
+    # Check if user has is verified
+    # TODO
+    
     # Get user's name from database
     username = db.execute("SELECT username FROM users WHERE email = ?", (user_id,)).fetchone()[0]
 
@@ -105,8 +110,8 @@ def register():
             
             username = str(form.username.data)
 
-            email = db.execute("SELECT email FROM users WHERE email = ?", (form.email.data,)).fetchall()
-            if len(email) == 1:
+            email = db.execute("SELECT email FROM users JOIN unverifiedUsers ON users.email=unverifiedUsers.email WHERE email = ?", (form.email.data,)).fetchall()
+            if len(email) != 0:
                 form.email.errors.append("Email already exists")
                 return render_template("register.html", form=form)
 
@@ -123,7 +128,7 @@ def register():
             hashed_password = str(generate_password_hash(password))
             # Insert user into database
             print("Inserting user into database")
-            db.execute("INSERT INTO users (username, email, password, firstName, lastName) VALUES (?, ?, ?, ?, ?)", 
+            db.execute("INSERT INTO unverifiedUsers (username, email, password, firstName, lastName) VALUES (?, ?, ?, ?, ?)", 
                                           (username, email, hashed_password, firstName, lastName))
             print("Committing changes to database")
             db.commit()
@@ -131,7 +136,8 @@ def register():
             # Add user to session
             session["email"]= form.email.data
 
-            return redirect("/")
+            # Redirect to email verification page
+            return redirect("/emailVerification")
 
 @app.route("/login", methods=["GET", "POST"])
 def Login():
@@ -173,3 +179,9 @@ def logout():
     # Remove user from session
     session.pop("email", None)
     return redirect("/")
+
+@app.route("/emailVerification", methods=["GET", "POST"])
+def emailVerification():
+    """Email verification page"""
+
+    return render_template("emailVerification.html")
