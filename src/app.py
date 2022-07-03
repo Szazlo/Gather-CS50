@@ -16,7 +16,7 @@ from database import get_db, close_db
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
-# from helpers import login_required
+from helpers import isRoleBasedEmail
 
 app = Flask(__name__)
 
@@ -89,6 +89,10 @@ def dashboard():
     # Get user's name from the main database
     username = db.execute("SELECT username FROM users WHERE email = ?", (user_id,)).fetchone()
 
+    #Failsafe for if the user is not in the database but the session is still active
+    if username == None:
+        return redirect("/logout")
+        
     return render_template("dashboard.html", username=username)
 
 
@@ -115,6 +119,10 @@ def register():
                 return render_template("register.html", form=form)
             
             username = str(form.username.data)
+
+            if isRoleBasedEmail(form.email.data):
+                form.email.errors.append("Email is not valid")
+                return render_template("register.html", form=form)
 
             email = db.execute("SELECT users.email FROM users JOIN unverifiedUsers ON users.email = unverifiedUsers.email WHERE users.email = ?", 
                               (form.email.data,)).fetchall()
