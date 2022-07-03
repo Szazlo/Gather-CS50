@@ -59,10 +59,13 @@
                     <br>
                 {% endfor %}
                 <br />
-                <!-- {{ form.recaptcha() }} ==> removed, server response error -->
-                <!-- <br /> -->
+                <div class="termstyle">
+                {{ form.tandcbox(placeholder="I have read and agree to the privacy policy and terms of service.") }}
+                </div>
+                <br />
                 {{ form.submit() }}
              </form>
+             </div>
              <p> Already have an account? <a href="/login">Log in!</a></p> 
             </div>
          </div>

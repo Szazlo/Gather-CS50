@@ -44,9 +44,18 @@ header {
   color: #ed7e7e;
 }
 
+.termstyle {
+  display: flex;
+}
+
+input[type=checkbox] {
+  color: #FFFFFF;
+}
+
 .loginpage h2, .registerpage h2 {
   margin-bottom: 1em;
 }
+
 
 main {
   display: flex;

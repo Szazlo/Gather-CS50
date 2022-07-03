@@ -14,6 +14,7 @@ class registerForm(FlaskForm):
     password = PasswordField(validators=[InputRequired(), Length(min=8)])
     confirmPassword = PasswordField(validators=[InputRequired(), Length(min=8)])
     # recaptcha = RecaptchaField() ==> Removed, server response error
+    tandcbox = BooleanField("I have read and agree to the privacy policy and terms of service.", [validators.DataRequired()])
     submit = SubmitField("Sign up")
 
 class loginForm(FlaskForm):
