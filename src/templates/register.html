@@ -13,39 +13,50 @@
             <form action="/register" method="POST" >
                 {{ form.hidden_tag() }}
                 {{ form.firstName(placeholder="First Name") }}
-                <br />
+                <br> 
                 {% for error in form.firstName.errors %}
                     <p class="error">{{ error }}</p>
+                {% else %} 
+                    <br>
                 {% endfor %}
-                <br />
+
                 {{ form.lastName(placeholder="Last Name") }}
-                <br />
+                <br>
                 {% for error in form.lastName.errors %}
                     <p class="error">{{ error }}</p>
+                {% else %} 
+                    <br>
                 {% endfor %}
-                <br />
+
                 {{ form.username(placeholder="Username") }}
-                <br />
+                <br>
                 {% for error in form.username.errors %}
                     <p class="error">{{ error }}</p>
+                {% else %}
+                    <br>
                 {% endfor %}
-                <br />
                 {{ form.email(placeholder="Email") }}
-                <br />
+                <br>
                 {% for error in form.email.errors %}
                     <p class="error">{{ error }}</p>
+                {% else %} 
+                    <br>
                 {% endfor %}
-                <br />
+
                 {{ form.password(placeholder="Password") }}
-                <br />
+
                 {% for error in form.password.errors %}
                     <p class="error">{{ error }}</p>
+                {% else %}
+                    <br>
                 {% endfor %}
                 <br />
                 {{ form.confirmPassword(placeholder="Confirm Password") }}
                 <br />
                 {% for error in form.confirmPassword.errors %}
                     <p class="error">{{ error }}</p>
+                {% else %}
+                    <br>
                 {% endfor %}
                 <br />
                 {{ form.submit() }}
