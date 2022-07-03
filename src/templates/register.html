@@ -5,6 +5,27 @@
 {% endblock %}
 
 {% block main_content %}
+<script>
+    window.addEventListener("load", function(){
+    var toggle  = document.getElementById('togglePassword');
+    var x = document.getElementById('{{form.password.id}}');
+    var con = document.getElementById('{{form.confirmPassword.id}}');
+    toggle.addEventListener('click', function() {
+        if (toggle.className === 'far fa-eye') {
+            toggle.className = 'fa-eye-slash';
+        } else {
+            toggle.className = 'far fa-eye';
+        }
+        if(x.type === 'password') {
+            x.type = 'text'; 
+            con.type = 'text';
+        } else {
+            x.type = 'password';
+            con.type = 'password';
+        }
+    });
+});
+</script>
 <main>
     <div class="container">
         <div class="text-center">
@@ -44,7 +65,7 @@
                 {% endfor %}
 
                 {{ form.password(placeholder="Password") }}
-
+                <i class="far fa-eye" id="togglePassword" style="margin-left: -30px; cursor: pointer;"></i>
                 {% for error in form.password.errors %}
                     <p class="error">{{ error }}</p>
                 {% else %}
@@ -58,9 +79,9 @@
                 {% else %}
                     <br>
                 {% endfor %}
-                <br />
                 <div class="termstyle">
-                {{ form.tandcbox(placeholder="I have read and agree to the privacy policy and terms of service.") }}
+                {{ form.tandcbox() }}
+                {{ form.tandcbox.label() }}
                 </div>
                 <br />
                 {{ form.submit() }}
