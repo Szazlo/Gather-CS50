@@ -41,6 +41,7 @@ header {
 
 .error {
   margin-bottom: 0px;
+  color: #ed7e7e;
 }
 
 .loginpage h1, .registerpage h1 {
