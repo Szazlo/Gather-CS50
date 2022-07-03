@@ -13,7 +13,7 @@ class registerForm(FlaskForm):
     email = EmailField(validators=[InputRequired(), Email()])
     password = PasswordField(validators=[InputRequired(), Length(min=8)])
     confirmPassword = PasswordField(validators=[InputRequired(), Length(min=8)])
-    recaptcha = RecaptchaField()
+    # recaptcha = RecaptchaField() ==> Removed, server response error
     submit = SubmitField("Sign up")
 
 class loginForm(FlaskForm):

@@ -31,8 +31,8 @@ header {
   margin-right: 20%;
   }
 
-.welcomepage p:last-of-type, .loginpage p:last-of-type {
-  margin-top: 2em;
+.welcomepage p:last-of-type, .loginpage p:last-of-type, .registerpage p:last-of-type {
+  margin-top: 1em;
 }
 
 .welcomepage div {
@@ -44,7 +44,7 @@ header {
   color: #ed7e7e;
 }
 
-.loginpage h1, .registerpage h1 {
+.loginpage h2, .registerpage h2 {
   margin-bottom: 1em;
 }
 

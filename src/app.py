@@ -26,8 +26,8 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["SECRET_KEY"] = "( . Y . )__Xyz143Babs"
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
-app.config["RECAPTCHA_PUBLIC_KEY"] = "6LeThr0gAAAAAKyhPwM3Xp8t4hMYM_2alO8xV1v-"
-app.config["RECAPTCHA_PRIVATE_KEY"] = "6LeThr0gAAAAALbqm5g5F5KT17iG-ynxPT8-5oA_"
+# app.config["RECAPTCHA_PUBLIC_KEY"] = "6LeThr0gAAAAAKyhPwM3Xp8t4hMYM_2alO8xV1v-"
+# app.config["RECAPTCHA_PRIVATE_KEY"] = "6LeThr0gAAAAALbqm5g5F5KT17iG-ynxPT8-5oA_" # use with captcha v2
 
 Session(app)
 
