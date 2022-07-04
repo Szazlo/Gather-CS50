@@ -1,6 +1,6 @@
 from itertools import product
 from pipes import Template
-import re
+import re, smtplib
 from urllib import response
 from functools import wraps
 from django.http import HttpResponse
@@ -16,7 +16,7 @@ from database import get_db, close_db
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
-from helpers import isRoleBasedEmail
+from helpers import isRoleBasedEmail, create_activation_link
 
 app = Flask(__name__)
 
@@ -26,6 +26,7 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["SECRET_KEY"] = "( . Y . )__Xyz143Babs"
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
+app.config["APP_NAME"] = "Gather"
 # app.config["RECAPTCHA_PUBLIC_KEY"] = "6LeThr0gAAAAAKyhPwM3Xp8t4hMYM_2alO8xV1v-"
 # app.config["RECAPTCHA_PRIVATE_KEY"] = "6LeThr0gAAAAALbqm5g5F5KT17iG-ynxPT8-5oA_" # use with captcha v2
 
@@ -81,13 +82,13 @@ def dashboard():
     user_id = session["email"]
 
     # Check if user has is verified
-    username = db.execute("SELECT username FROM unverifiedUsers WHERE email = ?", (user_id,)).fetchone()
-    if username:
-        # The user is not verified and needs to verify their account to see the real dashboard
-        return render_template("dashboard.html", username="unverified user")
+    # username = db.execute("SELECT username FROM unverifiedUsers WHERE email = ?", (user_id,)).fetchone()
+    # if username:
+    #     # The user is not verified and needs to verify their account to see the real dashboard
+    #     return render_template("dashboard.html", username="unverified user")
 
     # Get user's name from the main database
-    username = db.execute("SELECT username FROM users WHERE email = ?", (user_id,)).fetchone()
+    username = db.execute("SELECT username FROM users WHERE email = ?", (user_id,)).fetchone()[0]
 
     #Failsafe for if the user is not in the database but the session is still active
     if username == None:
@@ -124,7 +125,7 @@ def register():
                 form.email.errors.append("Email is not valid")
                 return render_template("register.html", form=form)
 
-            email = db.execute("SELECT users.email FROM users JOIN unverifiedUsers ON users.email = unverifiedUsers.email WHERE users.email = ?", 
+            email = db.execute("SELECT email FROM users WHERE email = ?", 
                               (form.email.data,)).fetchall()
             if len(email) != 0:
                 form.email.errors.append("Email already exists")
@@ -161,7 +162,7 @@ def register():
             hashed_password = str(generate_password_hash(password))
             # Insert user into database
             print("Inserting user into database")
-            db.execute("INSERT INTO unverifiedUsers (username, email, password, firstName, lastName) VALUES (?, ?, ?, ?, ?)", 
+            db.execute("INSERT INTO users (username, email, password, firstName, lastName) VALUES (?, ?, ?, ?, ?)", 
                                           (username, email, hashed_password, firstName, lastName))
             print("Committing changes to database")
             db.commit()
@@ -169,8 +170,8 @@ def register():
             # Add user to session
             session["email"]= form.email.data
 
-            # Redirect to email verification page
-            return redirect("/emailVerification")
+            # Redirect to home page
+            return redirect("/")
 
 @app.route("/login", methods=["GET", "POST"])
 def Login():
@@ -213,8 +214,27 @@ def logout():
     session.pop("email", None)
     return redirect("/")
 
-@app.route("/emailVerification", methods=["GET", "POST"])
-def emailVerification():
-    """Email verification page"""
+# @app.route("/emailVerification", methods=["GET", "POST"])
+# def emailVerification():
+#     """Email verification page"""
+    # Get user's id from session
+    # email = session["email"]
+    # activationLink = create_activation_link(email)
 
-    return render_template("EmailVerification.html")
+    # sender = "gatherappproject@gmail.com"
+    # receivers = [email]
+
+    # link = "http://" + request.host + "/emailVerification?link=" + activationLink
+    # message = """From: From Gather gatherappproject@gmail.com
+    # To: To {}
+    # Subject: Email Verification
+    
+    # Please click the link below to verify your email address.
+    # {}""".format(email, link)
+    # try:
+    #     smtp0bj = smtplib.SMTP()
+    #     smtp0bj.sendmail(sender, receivers, message)
+    #     print("Sent email?")
+    # except smtplib.SMTPException:
+    #     print("Error: unable to send email")
+    # return render_template("EmailVerification.html")

@@ -3,6 +3,9 @@ import requests
 from flask import redirect, render_template, request, session, g
 from functools import wraps
 from database import get_db
+import email
+import sqlite3
+import string, random
 
 def login_required(f):
     @wraps(f)
@@ -31,4 +34,16 @@ def isRoleBasedEmail(email):
             roles.close()
             return True
 
+def create_activation_link(email):
+    """Create an activation link for the user"""
+    db = sqlite3.connect('app.db', check_same_thread=False)
     
+    activation_code = ''.join(random.choice(string.ascii_letters) for i in range(10))
+
+    if db.execute("SELECT activationLink FROM verificationLinks WHERE activationLink = ?", (activation_code,)).fetchall():
+        create_activation_link(email)
+    else:
+        db.execute("INSERT INTO verificationLinks (email, activationLink) VALUES (?, ?)", (email, activation_code))
+        db.commit()
+        db.close()
+        return activation_code
