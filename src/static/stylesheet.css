@@ -61,8 +61,10 @@ input[type=checkbox] {
   margin-bottom: 1em;
 }
 
-label {
+#regtandc {
   font-size: 0.8em;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 main {
