@@ -92,11 +92,11 @@ def dashboard():
     currentTime = dt.now()
     greeting = ""
     if currentTime.hour < 12:
-        greeting = "Good morning."
+        greeting = "Good morning"
     elif 12 <= currentTime.hour < 18:
-        greeting = "Good afternoon."
+        greeting = "Good afternoon"
     else:
-        greeting = "Good evening."
+        greeting = "Good evening"
 
     #Failsafe for if the user is not in the database but the session is still active
     if username == None:
