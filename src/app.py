@@ -81,11 +81,11 @@ def dashboard():
     # Get user's id from session
     user_id = session["email"]
 
-    # Check if user has is verified
-    # username = db.execute("SELECT username FROM unverifiedUsers WHERE email = ?", (user_id,)).fetchone()
-    # if username:
-    #     # The user is not verified and needs to verify their account to see the real dashboard
-    #     return render_template("dashboard.html", username="unverified user")
+    # Check if user  is verified
+    verified = db.execute("SELECT verified FROM users WHERE email = ?", (user_id,)).fetchone()
+    if not verified:
+        # The user is not verified and needs to verify their account to see the real dashboard
+        return render_template("dashboard.html", username="unverified user")
 
     # Get user's name from the main database
     username = db.execute("SELECT username FROM users WHERE email = ?", (user_id,)).fetchone()[0]

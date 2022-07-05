@@ -1,4 +1,5 @@
 import os
+from django.shortcuts import render
 import requests
 from flask import redirect, render_template, request, session, g
 from functools import wraps
@@ -38,7 +39,7 @@ def create_activation_link(email):
     """Create an activation link for the user"""
     db = sqlite3.connect('app.db', check_same_thread=False)
     
-    activation_code = ''.join(random.choice(string.ascii_letters) for i in range(10))
+    activation_code = ''.join(random.choice(string.ascii_letters) for i in range(15))
 
     if db.execute("SELECT activationLink FROM verificationLinks WHERE activationLink = ?", (activation_code,)).fetchall():
         create_activation_link(email)
