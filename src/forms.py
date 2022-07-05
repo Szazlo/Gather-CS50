@@ -21,3 +21,11 @@ class loginForm(FlaskForm):
     email = StringField(validators=[InputRequired()])
     password = PasswordField(validators=[InputRequired()])
     submit = SubmitField("Log in")
+
+class meetingForm(FlaskForm):
+    title = StringField("Title", [validators.DataRequired()])
+    description = StringField("Description", [validators.DataRequired()])
+    location = StringField("Location", [validators.DataRequired()])
+    date = DateField("Date", [validators.DataRequired()])
+    time = TimeField("Time", [validators.DataRequired()])
+    submit = SubmitField("Create")
