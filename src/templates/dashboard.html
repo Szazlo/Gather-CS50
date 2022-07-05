@@ -12,4 +12,15 @@
             <h4> Not you? <a href="/logout"> Log out</a></h4>
         </div>
     </div>
+    {% for meeting in meetings %} 
+        {{ meeting }} 
+        <!-- Meeting details -->
+    {% else %}
+        <div class="container">
+            <div class="text-center">
+                <h2>No meetings found</h2>
+                <h3>Click <a href="">here</a> to create one!</h3>
+            </div>
+        </div>
+    {% endfor %}
 {% endblock %}
