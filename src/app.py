@@ -9,7 +9,7 @@ from flask import Flask, render_template, request, make_response, redirect, sess
 from flask_session import Session
 from flask_wtf import FlaskForm
 from flask_sqlalchemy import SQLAlchemy
-
+from datetime import datetime as dt
 from wtforms import DecimalField
 from forms import *
 from database import get_db, close_db
@@ -89,12 +89,20 @@ def dashboard():
 
     # Get user's name from the main database
     username = db.execute("SELECT username FROM users WHERE email = ?", (user_id,)).fetchone()[0]
+    currentTime = dt.now()
+    greeting = ""
+    if currentTime.hour < 12:
+        greeting = "Good morning."
+    elif 12 <= currentTime.hour < 18:
+        greeting = "Good afternoon."
+    else:
+        greeting = "Good evening."
 
     #Failsafe for if the user is not in the database but the session is still active
     if username == None:
-        return redirect("/logout")
+        return redirect("/logout")  
 
-    return render_template("dashboard.html", username=username)
+    return render_template("dashboard.html", username=username, greeting=greeting)
 
 
 @app.route("/register", methods=["GET", "POST"])
