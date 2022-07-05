@@ -89,6 +89,10 @@ def dashboard():
 
     # Get user's name from the main database
     username = db.execute("SELECT username FROM users WHERE email = ?", (user_id,)).fetchone()[0]
+    # Failsafe for if the user is not in the database but the session is still active
+    if username == None:
+        return redirect("/logout") 
+
     currentTime = dt.now()
     greeting = ""
     if currentTime.hour < 12:
@@ -97,10 +101,6 @@ def dashboard():
         greeting = "Good afternoon"
     else:
         greeting = "Good evening"
-
-    #Failsafe for if the user is not in the database but the session is still active
-    if username == None:
-        return redirect("/logout")  
 
     return render_template("dashboard.html", username=username, greeting=greeting)
 
@@ -246,3 +246,26 @@ def logout():
     # except smtplib.SMTPException:
     #     print("Error: unable to send email")
     # return render_template("EmailVerification.html")
+
+@app.route("/createMeeting", methods=["GET", "POST"])
+@login_required
+def meetingCreator():
+    """Page to create meetings"""
+    form = meetingForm()
+
+    if request.method == "GET":
+        return render_template("createMeeting.html", form=form)
+
+    else:
+        if form.validate_on_submit():
+            # Get form data
+            
+            # Insert meeting into database
+            print("Inserting meeting into database")
+            db.execute("INSERT INTO meetings (title, description, location, date, time, duration, creator) VALUES (?, ?, ?, ?, ?, ?, ?)", 
+                                          (title, description, location, date, time, duration, session["email"]))
+            print("Committing changes to database")
+            db.commit()
+            
+            # Redirect to home page
+            return redirect("/")

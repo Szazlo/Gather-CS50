@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Create Meeting
+{% endblock %}
+
+{% block main_content %}
+<main>
+    <div class ="container">
+        <div class="text-center">
+            <h2><b>Create a Meeting</b></h2>
+            <form action="/createMeeting" method="POST">
+                {{ form.hidden_tag() }}
+                {{ form.meeting_name(placeholder="Meeting Name") }}
+                <br>
+                {{ form.meeting_description(placeholder="Description") }}
+                <br>
+                {{ form.meeting_location(placeholder="Location") }}
+                {% for error in form.meeting_location.errors %}
+                    <p class="error">{{ error }}</p>
+                {% else %} 
+                    <br>
+                {% endfor %}
+                {{ form.meeting_dateRangeStart(placeholder="Selection Start Date") }}
+                {% for error in form.meeting_dateRangeStart.errors %} 
+                    <p class="error">{{ error }}</p>
+                {% else %}
+                    <br>
+                {% endfor %}
+                {{ form.meeting_dateRangeEnd(placeholder="Selection End Date") }}
+                {% for error in form.meeting_dateRangeEnd.errors %} 
+                    <p class="error">{{ error }}</p>
+                {% else %}
+                    <br>
+                {% endfor %}
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}
