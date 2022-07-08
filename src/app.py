@@ -87,8 +87,8 @@ def dashboard():
         # The user is not verified and needs to verify their account to see the real dashboard
         return render_template("dashboard.html", username="unverified user")
 
-    # Get user's name from the main database
     username = db.execute("SELECT username FROM users WHERE email = ?", (user_id,)).fetchone()[0]
+
     # Failsafe for if the user is not in the database but the session is still active
     if username == None:
         return redirect("/logout") 
@@ -108,7 +108,7 @@ def dashboard():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register page"""
-    # Define the form 
+
     form = registerForm()
 
     if request.method == "GET":
@@ -116,9 +116,8 @@ def register():
 
     else:
  
-        # form = registerForm()
         if form.validate_on_submit():
-            # Get form data
+
             firstName = str(form.firstName.data)
             lastName = str(form.lastName.data)
             username = db.execute("SELECT username FROM users WHERE username = ?", (form.username.data,)).fetchall()
@@ -166,10 +165,8 @@ def register():
                 form.confirmPassword.errors.append("Passwords do not match")
                 return render_template("register.html", form=form)
             
-            # Hash password
             hashed_password = str(generate_password_hash(password))
-            # Insert user into database
-            print("Inserting user into database")
+
             db.execute("INSERT INTO users (username, email, password, firstName, lastName) VALUES (?, ?, ?, ?, ?)", 
                                           (username, email, hashed_password, firstName, lastName))
             print("Committing changes to database")
@@ -178,7 +175,6 @@ def register():
             # Add user to session
             session["email"]= form.email.data
 
-            # Redirect to home page
             return redirect("/")
 
 @app.route("/login", methods=["GET", "POST"])
@@ -262,8 +258,8 @@ def meetingCreator():
             
             # Insert meeting into database
             print("Inserting meeting into database")
-            db.execute("INSERT INTO meetings (title, description, location, date, time, duration, creator) VALUES (?, ?, ?, ?, ?, ?, ?)", 
-                                          (title, description, location, date, time, duration, session["email"]))
+            # db.execute("INSERT INTO meetings (title, description, location, date, time, duration, creator) VALUES (?, ?, ?, ?, ?, ?, ?)", 
+            #                                  (title, description, location, date, time, duration, session["email"]))
             print("Committing changes to database")
             db.commit()
             
