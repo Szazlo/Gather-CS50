@@ -11,19 +11,26 @@
             <h2>{{ greeting }}, {{ username }}</b></h2>
             <h4> Not you? <a href="/logout"> Log out</a></h4>
         </div>
-    </div class="container">
+    </div> 
+    <div class="container">
         <div class="text-center">
+        {% if meetings %}
         {% for meeting in meetings %} 
-            <p>Name: {{ meeting["meeting_name"] }}</p>
-            <p>Description: {{ meeting["meeting_description"] }}</p>
-            <p>Location: {{ meeting["meeting_location"] }}</p>
-            <p>Attendees: {{ meeting["meeting_attendees"] }}</p> 
-            <p>Status: {{ meeting[4] }}</p>
+            <p>Name: {{ meeting[1] }}</p>
+            <p>Description: {{ meeting[2] }}</p>
+            <p>Location: {{ meeting[4] }}</p>
+            <p>Attendees: Feature not developed yet</p> 
+            <p>Status: {{ meeting[9] }}</p>
             <!-- Meeting details -->
+            _________________________
+        {% endfor %}
         {% else %}
             <h2>No meetings found</h2>
             <h3>Click <a href="/createMeeting">here</a> to create one!</h3>
+        {% endif %}
+        <br>
+        <a href="/createMeeting">New</a>
         </div>
     </div>
-    {% endfor %}
+</main>
 {% endblock %}

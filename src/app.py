@@ -101,8 +101,21 @@ def dashboard():
         greeting = "Good evening"
 
     # Show meetings created by user
-    meeting_summary = db.execute("SELECT *, COUNT(meeting_attendees) FROM meetings WHERE meeting_manager = ?", (user_id,)).fetchall()
+    meeting_summary = db.execute("SELECT * FROM meetings WHERE meeting_manager = ?", (user_id,)).fetchall()
     print(meeting_summary)
+    if meeting_summary[0][0] is None:
+        meeting_summary = None
+    
+    # Count meeting attendees
+    """
+    for meeting in meeting_summary:
+        attendees = meeting[8].split(", ")
+        if attendees is None:
+            meeting.append(0)
+        else:
+            meeting.append(len(attendees))
+    """
+        
     return render_template("dashboard.html", username=username, greeting=greeting, meetings=meeting_summary)
 
 
@@ -289,4 +302,9 @@ def meetingCreator():
                             form.meeting_dateRangeEnd.data, form.meeting_public.data, form.meeting_pin.data, form.meeting_type.data,))
             print("Inserted meeting into database")
             db.commit()
+
             return redirect("/")
+
+if __name__ == "__main__":
+    app.run(debug=True)
+    # app.run(host="

@@ -21,11 +21,11 @@ VALUES
 CREATE TABLE meetings (
     meeting_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     meeting_name TEXT NOT NULL,
+    meeting_description TEXT DEFAULT "No description has been set",
     meeting_manager TEXT NOT NULL,
     meeting_location TEXT,
     meeting_dateRangeStart date NOT NULL,
     meeting_dateRangeEnd date NOT NULL,
-    meeting_description TEXT DEFAULT "No description has been set",
     meeting_attendees TEXT,
     meeting_pin TEXT,
     meeting_status TEXT DEFAULT "Upcoming",
