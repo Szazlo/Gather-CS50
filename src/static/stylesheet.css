@@ -120,6 +120,18 @@ a {
   margin-left: -30px;
 }
 
+#meeting_type {
+    padding: 0.5rem 1rem;
+    border: 1px solid #6A6A6A;
+    border-radius: 1.5rem;
+    background-color: transparent;
+    color: #6A6A6A;
+}
+
+#ACd5s {
+  color: #6A6A6A;
+  cursor: pointer;
+}
 
 #email {
     padding: 0.5rem 1rem;

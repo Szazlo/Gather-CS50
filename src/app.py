@@ -9,7 +9,7 @@ from flask import Flask, render_template, request, make_response, redirect, sess
 from flask_session import Session
 from flask_wtf import FlaskForm
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime as dt
+from datetime import datetime as dt, date
 from wtforms import DecimalField
 from forms import *
 from database import get_db, close_db
@@ -27,8 +27,6 @@ app.config["SECRET_KEY"] = "( . Y . )__Xyz143Babs"
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 app.config["APP_NAME"] = "Gather"
-# app.config["RECAPTCHA_PUBLIC_KEY"] = "6LeThr0gAAAAAKyhPwM3Xp8t4hMYM_2alO8xV1v-"
-# app.config["RECAPTCHA_PRIVATE_KEY"] = "6LeThr0gAAAAALbqm5g5F5KT17iG-ynxPT8-5oA_" # use with captcha v2
 
 Session(app)
 
@@ -102,7 +100,10 @@ def dashboard():
     else:
         greeting = "Good evening"
 
-    return render_template("dashboard.html", username=username, greeting=greeting)
+    # Show meetings created by user
+    meeting_summary = db.execute("SELECT *, COUNT(meeting_attendees) FROM meetings WHERE meeting_manager = ?", (user_id,)).fetchall()
+    print(meeting_summary)
+    return render_template("dashboard.html", username=username, greeting=greeting, meetings=meeting_summary)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -195,12 +196,11 @@ def Login():
 
             # Check if user exists
             if len(user) == 1:
-                # Check if password is correct
+
                 if check_password_hash(user[0][2], password):
-                    # Add user to session
-                    print("Added user to session")
+
                     session["email"]= email
-                    print("Redirecting to dashboard")
+
                     return redirect("/")
                 else:
                     return render_template("login.html", form=form, error="Incorrect password")
@@ -214,7 +214,7 @@ def Login():
 @login_required
 def logout():
     """Logout page"""
-    # Remove user from session
+
     session.pop("email", None)
     return redirect("/")
 
@@ -251,17 +251,42 @@ def meetingCreator():
 
     if request.method == "GET":
         return render_template("createMeeting.html", form=form)
-
+ 
     else:
         if form.validate_on_submit():
-            # Get form data
+            # Server side validation
+
+            error_count = 0
+            if len(form.meeting_name.data) > 50:
+                error_count += 1
+                form.meeting_name.errors.append("Meeting name must be less than 50 characters")
+
             
-            # Insert meeting into database
-            print("Inserting meeting into database")
-            # db.execute("INSERT INTO meetings (title, description, location, date, time, duration, creator) VALUES (?, ?, ?, ?, ?, ?, ?)", 
-            #                                  (title, description, location, date, time, duration, session["email"]))
-            print("Committing changes to database")
+            if len(form.meeting_description.data) > 250:
+                error_count += 1
+                form.meeting_description.errors.append("Meeting description must be less than 250 characters")
+
+            if form.meeting_dateRangeStart.data < date.today():
+                error_count += 1
+                form.meeting_dateRangeStart.errors.append("Start date must be in the future")
+            
+            if form.meeting_dateRangeEnd.data < form.meeting_dateRangeStart.data:
+                error_count += 1
+                form.meeting_dateRangeEnd.errors.append("End date must be after start date")
+
+            # If user made event public yet still requires a pin
+
+            if form.meeting_public.data == True and form.meeting_pin.data:
+                error_count += 1
+                form.meeting_pin.errors.append("Cannot add PIN to a public event")
+
+            if error_count > 0:
+                return render_template("createMeeting.html", form=form)
+
+            # Database insertion
+            db.execute("INSERT INTO meetings (meeting_name, meeting_description, meeting_manager, meeting_location, meeting_dateRangeStart, meeting_dateRangeEnd, meeting_public, meeting_pin, meeting_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+                           (form.meeting_name.data, form.meeting_description.data, session["email"], form.meeting_location.data, form.meeting_dateRangeStart.data,
+                            form.meeting_dateRangeEnd.data, form.meeting_public.data, form.meeting_pin.data, form.meeting_type.data,))
+            print("Inserted meeting into database")
             db.commit()
-            
-            # Redirect to home page
             return redirect("/")
