@@ -29,7 +29,7 @@ class meetingForm(FlaskForm):
     meeting_dateRangeStart = DateField(validators=[InputRequired()])
     meeting_dateRangeEnd = DateField(validators=[InputRequired()])
     meeting_selectionPeriod = NumberRange(min=1, max=24)
-    meeting_types = ["Select Type", "Social Event", "Meeting", "Other"]
+    meeting_types = ["Select Type", "Social Event", "Meeting", "Orgy", "Other"]
     meeting_type= SelectField(choices=(meeting_types), validators=[InputRequired()])
     # L-> Will be a dropdown.
     meeting_public = BooleanField()
