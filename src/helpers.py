@@ -19,7 +19,6 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-
 def isRoleBasedEmail(email):
     """Check for any role based email registrations"""
     username = ""

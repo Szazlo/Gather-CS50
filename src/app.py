@@ -16,7 +16,7 @@ from database import get_db, close_db
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
-from helpers import isRoleBasedEmail, create_activation_link
+from helpers import apology, isRoleBasedEmail, create_activation_link
 
 app = Flask(__name__)
 
@@ -102,10 +102,12 @@ def dashboard():
 
     # Show meetings created by user
     meeting_summary = db.execute("SELECT * FROM meetings WHERE meeting_manager = ?", (user_id,)).fetchall()
-    print(meeting_summary)
-    if meeting_summary[0][0] is None:
-        meeting_summary = None
     
+    try:
+        if meeting_summary[0][0] is None or not meeting_summary:
+            meeting_summary = None
+    except:
+        pass
     # Count meeting attendees
     """
     for meeting in meeting_summary:
@@ -304,6 +306,116 @@ def meetingCreator():
             db.commit()
 
             return redirect("/")
+
+
+""" The syntax for the following function is as follows:
+    After '/meeting/<>' we use the int: to convert the input url after meeting to an int,
+    which is stored into a variable called meeting_id."""
+
+@app.route("/meetings/<int:meeting_id>", methods=["GET", "POST"])
+@login_required
+def displayMeeting(meeting_id):
+    """Use the custom URL to find the meeting."""
+    """PSEUDOCODE FOR THE FOLLOWING FUNCTION:
+    1. Get the meeting_id from the url
+    2. Get the meeting from the database
+    3. Get the user from the database
+    4. Check if the user is the meeting manager
+    5. If the user is the meeting manager, display the meeting information.
+    6. If the user is not the meeting manager, 
+        look at if the meeting is public and ask for the PIN if it is.
+    7. Check if it matches the meeting's pin
+    8. If the pin matches, run the following code
+            * Check if the user is already in the meeting
+            * If the user is not in the meeting, prompt them to join the meeting. The website will remember who the user is based on sessions.
+              *** Do we require sign up?"""
+    
+    meeting = db.execute("SELECT meeting_id, meeting_public, meeting_manager FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
+    meeting = meeting[0]
+
+    if not meeting:
+        return apology("Meeting does not exist", 404)
+
+    attendees = db.execute("SELECT meeting_attendees FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchone()
+
+    try:
+        if attendees[0][0] != None:
+            # Parse the attendees string into a list of emails
+            attendees = attendees[0].split(",")
+        else:
+            attendees = None
+    except:
+        attendees = None
+    # Page for meeting manager
+    if meeting[2] == session["email"]:
+        meeting = db.execute("SELECT * FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
+        print(meeting)
+        return render_template("AdminMeeting.html", meeting=meeting[0], attendees=attendees)
+
+    # Check if user is attending the meeting
+    if attendees != None:
+        for attendee in attendees:
+            if attendee == session["email"]:
+                meeting = db.execute("SELECT * FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
+                return render_template("attendeeMeeting.html", meeting=meeting[0], attendees=attendees)
+
+    # If above loop fails, check if the meeting is public
+    if meeting[1] == True:
+        return render_template("attendeeMeeting.html", meeting_id=meeting_id, attendees=attendees)
+    else:
+        return render_template("isPrivate.html", meeting_id=meeting_id)
+
+    
+
+@app.route("/joinMeeting", methods=["GET", "POST"])
+@login_required
+def pinCheck():
+    """Page to join a meeting"""
+
+    if request.method == "GET":
+        if not request.args.get("meeting_id"):
+            return apology("How did you get there wtf.", 404)
+        return render_template("askForPin.html", meeting_id=request.args.get("meeting_id"))
+
+    else:
+        Pin = str(request.form.get("PIN"))
+        meeting_id = request.form.get("meeting_id")
+        print(Pin)
+        print(meeting_id)
+        actual_meeting = db.execute("SELECT meeting_id, meeting_pin FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()[0]
+        print(actual_meeting)
+        if not actual_meeting:
+            return apology("Meeting does not exist", 404)
+
+        print(actual_meeting[1])
+        if actual_meeting[1] != Pin:
+            return render_template("askForPin.html", error="Invalid PIN")
+        
+        # Add user to meeting
+        attendees = db.execute("SELECT meeting_attendees FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
+        # If the meeting has no attendees, set the attendees to the user
+        if attendees[0][0] == None:
+            db.execute("UPDATE meetings SET meeting_attendees = ? WHERE meeting_id = ?", (session["email"], meeting_id,))
+            db.commit()        
+        else:
+            attendees = attendees[0][0].split(",")
+            for attendee in attendees:
+                if attendee == session["email"]:
+                    return render_template("askForPin.html", error="You are already attending this meeting")
+            attendees.append(session["email"])
+            attendees = ",".join(attendees)
+            print(attendees)
+            print("adding user to meeting")
+            db.execute("UPDATE meetings SET meeting_attendees = ? WHERE meeting_id = ?", (attendees, meeting_id))
+            db.commit()
+
+        return redirect("/meetings/" + meeting_id)
+    
+@app.route("/deleteMeeting", methods=["GET", "POST"])
+@login_required
+def deleteMeeting():
+    return apology("Not implemented yet", 404)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

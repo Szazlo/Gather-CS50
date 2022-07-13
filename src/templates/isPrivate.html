@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block title %}It's private {%endblock %}
+
+{% block main_content %}
+    <div class="container">
+        <div class="text-center">
+            <h1>It's private</h1>
+            <p>You are not authorized to view this meeting.</p>
+            <p>If you think this is wrong,<a href="/joinMeeting?meeting_id={{ meeting_id}}">join the meeting</a>.
+            <br>The meeting's manager should have given you the PIN required to sign up.</p>
+        </div>
+    </div>
+{% endblock %}

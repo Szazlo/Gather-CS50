@@ -148,3 +148,15 @@ input{
   border-radius: 1.5rem;
   background-color: transparent;
 }
+
+.meeting_box {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: red;
+  color: #FFFFFF;
+  padding: 1rem;
+}

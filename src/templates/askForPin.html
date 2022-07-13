@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block title %} PIN required {% endblock %} 
+
+{% block main_content %} 
+    <div class="container">
+        <div class="text-center">
+            <form name="PIN" action="/joinMeeting" method="post">
+                <h1>PIN required</h1>
+                <p>Please enter the meeting PIN:</p>
+                <input type="text" hidden name="meeting_id" value="{{ meeting_id }}">
+                <input type="text" name="PIN" placeholder="PIN">
+                {% if error %}
+                    <p class="error">{{ error }}</p>
+                {% endif %}
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+{% endblock %}
