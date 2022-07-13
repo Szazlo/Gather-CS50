@@ -22,6 +22,11 @@ class loginForm(FlaskForm):
     password = PasswordField(validators=[InputRequired()])
     submit = SubmitField("Log in")
 
+class passwordresetForm(FlaskForm):
+    user = SelectField(validators=[InputRequired()])
+    newpassword = PasswordField(validators=[InputRequired(), Length(min=8)])
+    submit = SubmitField("Reset password")
+
 class meetingForm(FlaskForm):
     meeting_name = StringField(validators=[InputRequired()])
     meeting_description = StringField()
