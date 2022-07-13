@@ -48,3 +48,8 @@ def create_activation_link(email):
         db.commit()
         db.close()
         return activation_code
+
+def apology(message, code=400):
+    """Render message as an apology to user."""
+    return render_template("apology.html", description=message, code=code)
+        
