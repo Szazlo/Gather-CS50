@@ -8,6 +8,12 @@ import sqlite3
 import string, random
 
 def login_required(f):
+    """Requires user to be logged in.
+
+    Use as @login_required or @login_required().
+
+    Checks for session and if no session is found, redirects to login page.
+    """
     @wraps(f)
     def decorated_function(*args, **kwargs):
         try:
@@ -19,7 +25,9 @@ def login_required(f):
     return decorated_function
 
 def isRoleBasedEmail(email):
-    """Check for any role based email registrations"""
+    """Check for any role based email registrations
+
+    Examples include admin, marketing, etc."""
     username = ""
     for letter in email:
         if letter == "@":
@@ -48,6 +56,9 @@ def create_activation_link(email):
         return activation_code
 
 def apology(message, code=400):
-    """Render message as an apology to user."""
+    """Render message as an apology to user.
+    * Parameter 1: message to display to user
+    * Parameter 2: HTTP status code
+    """
     return render_template("apology.html", description=message, code=code)
         
