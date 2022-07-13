@@ -223,6 +223,37 @@ def Login():
     if request.method == "GET":
         return render_template("login.html", form=form)
 
+@app.route("/passwordreset", methods=["GET", "POST"])
+def Login():
+    form = passwordresetForm()
+    if request.method == "POST":
+        
+        if form.validate_on_submit():
+            # Get user's id from database
+
+            email = str(form.email.data)
+
+            password = str(form.password.data)
+
+            user = db.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchall()
+            print(user)
+
+            # Check if user exists
+            if len(user) == 1:
+
+                if check_password_hash(user[0][2], password):
+
+                    session["email"]= email
+
+                    return redirect("/")
+                else:
+                    return render_template("login.html", form=form, error="Incorrect password")
+            else:
+                return render_template("login.html", form=form, error="User does not exist")
+
+    if request.method == "GET":
+        return render_template("login.html", form=form)
+
 @app.route("/logout")
 @login_required
 def logout():
