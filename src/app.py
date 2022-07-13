@@ -3,8 +3,6 @@ from pipes import Template
 import re, smtplib
 from urllib import response
 from functools import wraps
-from django.http import HttpResponse
-from django.shortcuts import render
 from flask import Flask, render_template, request, make_response, redirect, session, url_for, g
 from flask_session import Session
 from flask_wtf import FlaskForm
@@ -419,4 +417,3 @@ def deleteMeeting():
 
 if __name__ == "__main__":
     app.run(debug=True)
-    # app.run(host="

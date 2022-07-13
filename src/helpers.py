@@ -1,5 +1,4 @@
 import os
-from django.shortcuts import render
 import requests
 from flask import redirect, render_template, request, session, g
 from functools import wraps
