@@ -398,7 +398,7 @@ def displayMeeting(meeting_id):
 
 @app.route("/joinMeeting", methods=["GET", "POST"])
 @login_required
-def pinCheck():
+def joinMeeting():
     """Page to join a meeting"""
 
     if request.method == "GET":
