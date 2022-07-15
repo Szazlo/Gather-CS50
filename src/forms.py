@@ -23,7 +23,7 @@ class loginForm(FlaskForm):
     submit = SubmitField("Log in")
 
 class passwordresetForm(FlaskForm):
-    user = SelectField(validators=[InputRequired()])
+    user = SelectField('users', choices=[])
     newpassword = PasswordField(validators=[InputRequired(), Length(min=8)])
     submit = SubmitField("Reset password")
 
