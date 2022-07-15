@@ -111,6 +111,7 @@ def dashboard():
     
     meetingsAttendingSummary = db.execute("SELECT * FROM meetings JOIN meeting_attendees ON meetings.meeting_id = meeting_attendees.meeting_id WHERE email = ?", 
                                          (session["email"],)).fetchall()
+
     try:
         if meetingsManagingSummary[0][0] is None or not meetingsManagingSummary:
             meetingsManagingSummary = None
@@ -456,6 +457,37 @@ def joinMeeting():
 
         return redirect("/meetings/" + meeting_id)
 
+@app.route("/leaveMeeting", methods=["GET", "POST"])
+@login_required
+def leaveMeeting():
+    """Page to leave a meeting"""
+
+    if request.method == "GET":
+        if not request.args.get("meeting_id"):
+            return apology("This section is under construction", 404)
+
+        meeting_id = request.args.get("meeting_id")
+        meeting = db.execute("SELECT meeting_attendees, meeting_manager FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
+        managerCheck = db.execute("SELECT meeting_manager FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
+        
+        if not meeting:
+            return apology("You are not attending this meeting", "You are not attending this meeting")
+        
+        if len(meeting) != 1:
+            return apology("Something went wrong", "Something went wrong")
+        
+        if managerCheck[0][0] == session["email"]:
+            return apology("You cannot delete your own meeting", "You are the meeting manager")
+        
+        meeting = meeting[0][0].split(",")
+        for attendee in meeting:
+            if attendee == session["email"]:
+                meeting.remove(attendee)
+                meeting = ",".join(meeting)
+                db.execute("UPDATE meetings SET meeting_attendees = ? WHERE meeting_id = ?", (meeting, meeting_id))
+                db.execute("DELETE FROM meeting_attendees WHERE meeting_id = ? AND email = ?", (meeting_id, session["email"]))
+                session["update"] = "Success! You have left the meeting"
+                return redirect("/dashboard") 
 
 @app.route("/deleteMeeting/<int:meeting_id>", methods=["GET", "POST"])
 @login_required
@@ -470,6 +502,7 @@ def deleteMeeting(meeting_id):
         return apology("You are not the meeting manager", 403)
     
     db.execute("DELETE FROM meetings WHERE meeting_id = ?", (meeting_id,))
+    db.execute("DELETE FROM meeting_attendees WHERE meeting_id = ?", (meeting_id,))
     db.commit()
     session["update"] = "Meeting deleted"
     return redirect("/dashboard")
