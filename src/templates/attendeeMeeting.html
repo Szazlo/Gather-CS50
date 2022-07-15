@@ -18,7 +18,7 @@
             {% else %} 
                 <p>No attendees</p>
             {% endfor %}
-            <p><a href="/deleteMeeting">Delete Meeting</a></p>
+            <p><a href="/leaveMeeting?meeting_id={{ meeting[0] }}">Leave</a></p>
         </div>
     </div>
 </main>
