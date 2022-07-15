@@ -7,7 +7,7 @@ from flask import Flask, render_template, request, make_response, redirect, sess
 from flask_session import Session
 from flask_wtf import FlaskForm
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime as dt, date
+from datetime import datetime as dt, date, timedelta
 from wtforms import DecimalField
 from forms import *
 from database import get_db, close_db
@@ -262,7 +262,6 @@ def passwordReset():
 @login_required
 def logout():
     """Logout page"""
-
     session.pop("email", None)
     return redirect("/")
 
@@ -322,6 +321,9 @@ def meetingCreator():
                 error_count += 1
                 form.meeting_dateRangeEnd.errors.append("End date must be after start date")
 
+            if form.meeting_dateRangeEnd.data - form.meeting_dateRangeStart.data > timedelta(days=30):
+                error_count += 1
+                form.meeting_dateRangeEnd.errors.append("Selection dates must be less than 30 days")
             # If user made event public yet still requires a pin
 
             if form.meeting_public.data == True and form.meeting_pin.data:
@@ -471,7 +473,7 @@ def leaveMeeting():
         managerCheck = db.execute("SELECT meeting_manager FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
         
         if not meeting:
-            return apology("You are not attending this meeting", "You are not attending this meeting")
+            return apology("You are not attending this meeting")
         
         if len(meeting) != 1:
             return apology("Something went wrong", "Something went wrong")
