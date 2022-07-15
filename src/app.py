@@ -458,7 +458,8 @@ def deleteMeeting(meeting_id):
     
     db.execute("DELETE FROM meetings WHERE meeting_id = ?", (meeting_id,))
     db.commit()
-    return redirect("/dashboard?update=Meeting+has+been+deleted")
+    session["update"] = "Meeting deleted"
+    return redirect("/dashboard")
 
 
 @app.route("/playground", methods=["GET"])
