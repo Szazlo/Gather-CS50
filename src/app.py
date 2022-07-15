@@ -77,7 +77,7 @@ def dashboard():
     # Get user's id from session
     user_id = session["email"]
     update = None
-    
+
     try:
         update = session["update"]
         session.pop("update", None)
@@ -107,16 +107,25 @@ def dashboard():
         greeting = "Good evening"
 
     # Show meetings created by user
-    meeting_summary = db.execute("SELECT * FROM meetings WHERE meeting_manager = ?", (user_id,)).fetchall()
+    meetingsManagingSummary = db.execute("SELECT * FROM meetings WHERE meeting_manager = ?", (user_id,)).fetchall()
     
+    meetingsAttendingSummary = db.execute("SELECT * FROM meetings JOIN meeting_attendees ON meetings.meeting_id = meeting_attendees.meeting_id WHERE email = ?", 
+                                         (session["email"],)).fetchall()
     try:
-        if meeting_summary[0][0] is None or not meeting_summary:
-            meeting_summary = None
+        if meetingsManagingSummary[0][0] is None or not meetingsManagingSummary:
+            meetingsManagingSummary = None
     except:
         pass
+
+    try:
+        if meetingsAttendingSummary[0][0] is None or not meetingsAttendingSummary:
+            meetingsAttendingSummary = None
+    except:
+        pass
+
     # Count meeting attendees
     """
-    for meeting in meeting_summary:
+    for meeting in meetingsManagingSummary:
         attendees = meeting[8].split(", ")
         if attendees is None:
             meeting.append(0)
@@ -125,7 +134,7 @@ def dashboard():
     """
     
     print(request.form.get("update"))
-    return render_template("dashboard.html", username=username, greeting=greeting, meetings=meeting_summary, update=update)
+    return render_template("dashboard.html", username=username, greeting=greeting, meetingsManaging=meetingsManagingSummary, meetingsAttendingSummary=meetingsAttendingSummary, update=update)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -209,7 +218,7 @@ def login():
         if form.validate_on_submit():
             # Get user's id from database
 
-            email = str(form.email.data)
+            email = str(form.email.data).lower()
 
             password = str(form.password.data)
 
@@ -441,6 +450,7 @@ def joinMeeting():
             db.execute("UPDATE meetings SET meeting_attendees = ? WHERE meeting_id = ?", (attendees, meeting_id))
             print("Inserting user to meeting attendees database")
             db.execute("INSERT INTO meeting_attendees (meeting_id, meeting_attendee) VALUES (?, ?)", (meeting_id, session["email"],))
+            print("Inserted user into meeting attendees database")
             db.commit()
 
         return redirect("/meetings/" + meeting_id)
