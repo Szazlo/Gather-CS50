@@ -77,6 +77,12 @@ def dashboard():
     # Get user's id from session
     user_id = session["email"]
 
+    try:
+        update = session["update"]
+        session.pop("update", None)
+    except KeyError:
+        pass
+
     # Check if user  is verified
     verified = db.execute("SELECT verified FROM users WHERE email = ?", (user_id,)).fetchone()
     if not verified:
@@ -115,8 +121,9 @@ def dashboard():
         else:
             meeting.append(len(attendees))
     """
-        
-    return render_template("dashboard.html", username=username, greeting=greeting, meetings=meeting_summary)
+    
+    print(request.form.get("update"))
+    return render_template("dashboard.html", username=username, greeting=greeting, meetings=meeting_summary, update=update)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -192,7 +199,7 @@ def register():
             return redirect("/")
 
 @app.route("/login", methods=["GET", "POST"])
-def Login():
+def login():
     form = loginForm()
 
     if request.method == "POST":
@@ -224,7 +231,7 @@ def Login():
         return render_template("login.html", form=form)
 
 @app.route("/passwordreset", methods=["GET", "POST"])
-def Login():
+def passwordReset():
     form = passwordresetForm()
     if request.method == "POST":
         
@@ -333,13 +340,23 @@ def meetingCreator():
                             form.meeting_dateRangeEnd.data, form.meeting_public.data, form.meeting_pin.data, form.meeting_type.data,))
             print("Inserted meeting into database")
             db.commit()
-
-            return redirect("/")
+            session["update"] = "Meeting created"
+            return redirect("/dashboard")
 
 
 """ The syntax for the following function is as follows:
     After '/meeting/<>' we use the int: to convert the input url after meeting to an int,
     which is stored into a variable called meeting_id."""
+
+@app.route("/meetings/")
+@login_required
+def meetingsSearch():
+    """Page to search for public meetings
+    
+    Not yet implemented
+    """
+
+    return apology("What are you doing here?", "Hello?")
 
 @app.route("/meetings/<int:meeting_id>", methods=["GET", "POST"])
 @login_required
@@ -360,10 +377,10 @@ def displayMeeting(meeting_id):
               *** Do we require sign up?"""
     
     meeting = db.execute("SELECT meeting_id, meeting_public, meeting_manager FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
-    meeting = meeting[0]
-
     if not meeting:
         return apology("Meeting does not exist", 404)
+
+    meeting = meeting[0]
 
     attendees = db.execute("SELECT meeting_attendees FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchone()
 
@@ -414,7 +431,7 @@ def joinMeeting():
         actual_meeting = db.execute("SELECT meeting_id, meeting_pin FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()[0]
         print(actual_meeting)
         if not actual_meeting:
-            return apology("Meeting does not exist", 404)
+            return apology("Maybe it was deleted", "Meeting does not exist")
 
         print(actual_meeting[1])
         if actual_meeting[1] != Pin:
@@ -436,15 +453,34 @@ def joinMeeting():
             print(attendees)
             print("adding user to meeting")
             db.execute("UPDATE meetings SET meeting_attendees = ? WHERE meeting_id = ?", (attendees, meeting_id))
+            print("Inserting user to meeting attendees database")
+            db.execute("INSERT INTO meeting_attendees (meeting_id, meeting_attendee) VALUES (?, ?)", (meeting_id, session["email"],))
             db.commit()
 
         return redirect("/meetings/" + meeting_id)
-    
-@app.route("/deleteMeeting", methods=["GET", "POST"])
-@login_required
-def deleteMeeting():
-    return apology("Not implemented yet", 404)
 
+
+@app.route("/deleteMeeting/<int:meeting_id>", methods=["GET", "POST"])
+@login_required
+def deleteMeeting(meeting_id):
+    """Page to delete a meeting"""
+    meeting = db.execute("SELECT meeting_id, meeting_manager FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
+    if not meeting:
+        return apology("Meeting does not exist", 404)
+    
+    meeting = meeting[0]
+    if meeting[1] != session["email"]:
+        return apology("You are not the meeting manager", 403)
+    
+    db.execute("DELETE FROM meetings WHERE meeting_id = ?", (meeting_id,))
+    db.commit()
+    return redirect("/dashboard?update=Meeting+has+been+deleted")
+
+
+@app.route("/playground", methods=["GET"])
+def playground():
+    """Page to test out new features"""
+    return render_template("playground.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
