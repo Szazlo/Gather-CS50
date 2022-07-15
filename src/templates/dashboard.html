@@ -31,9 +31,9 @@
     </div> 
     <div class="container">
         <div class="text-center">
-        {% if meetings %}
-        {% for meeting in meetings %} 
-            <a href="/meetings/{{ meeting[0] }}">
+        {% if meetingsManagingSummary %}
+        {% for meeting in meetingsManagingSummary %} 
+            <a href="/meetingsManagingSummary/{{ meeting[0] }}">
                 <div class="meeting_box">
                     <p>Name: {{ meeting[1] }}</p>
                     <p>Description: {{ meeting[2] }}</p>
@@ -52,7 +52,7 @@
             <h3>Click <a href="/createMeeting">here</a> to create one!</h3>
         {% endif %}
         <br>
-        {% if meetings %}
+        {% if meetingsManagingSummary %}
         <a href="/createMeeting">New</a>
         {% else %} 
         {% endif %}
@@ -63,11 +63,15 @@
     <div class="container" style="background-color: brown;">
         <div class="text-center">
             <h2>Meetings you are attending.</h2>
-            <!-- Meeting details 
-            {% for meeting in meetings_attending %}
+            {% for meeting in meetingsAttendingSummary %}
+                    <p>Name: {{ meeting[1] }}</p>
+                    <p>Description: {{ meeting[2] }}</p>
+                    <p>Location: {{ meeting[4] }}</p>
+                    <p>Attendees: Feature not developed yet</p> 
+                    <p>Status: {{ meeting[9] }}</p>
+            {% else %} 
+                <h2>No meetings found</h2>
             {% endfor %}
-            -->
-            <p>Feature in development</p>
         </div>
     </div>
 </main>

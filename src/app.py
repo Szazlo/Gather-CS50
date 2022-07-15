@@ -115,6 +115,7 @@ def dashboard():
         if meetingsManagingSummary[0][0] is None or not meetingsManagingSummary:
             meetingsManagingSummary = None
     except:
+        print("")
         pass
 
     try:
@@ -134,7 +135,7 @@ def dashboard():
     """
     
     print(request.form.get("update"))
-    return render_template("dashboard.html", username=username, greeting=greeting, meetingsManaging=meetingsManagingSummary, meetingsAttendingSummary=meetingsAttendingSummary, update=update)
+    return render_template("dashboard.html", username=username, greeting=greeting, meetingsManagingSummary=meetingsManagingSummary, meetingsAttendingSummary=meetingsAttendingSummary, update=update)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -449,7 +450,7 @@ def joinMeeting():
             print("adding user to meeting")
             db.execute("UPDATE meetings SET meeting_attendees = ? WHERE meeting_id = ?", (attendees, meeting_id))
             print("Inserting user to meeting attendees database")
-            db.execute("INSERT INTO meeting_attendees (meeting_id, meeting_attendee) VALUES (?, ?)", (meeting_id, session["email"],))
+            db.execute("INSERT INTO meeting_attendees (meeting_id, email) VALUES (?, ?)", (meeting_id, session["email"],))
             print("Inserted user into meeting attendees database")
             db.commit()
 
