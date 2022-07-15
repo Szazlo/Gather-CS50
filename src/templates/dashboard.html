@@ -1,12 +1,28 @@
+<!-- CHANGE THIS ONCE DONE-->
 {% extends "layout.html" %}
 
 {% block title %}
     Dashboard
 {% endblock %}
 
+{% block bootstrapJS %} 
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+{% endblock %} 
+
 {% block main_content %}
+{% if update %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Success!</strong> {{ update }}
+        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% endif %}
+    
 <main>
-    <div class="container">
+    <div class="container" style="background-color: brown">
         <div class="text-center">
             <h2>{{ greeting }}, {{ username }}</b></h2>
             <h4> Not you? <a href="/logout"> Log out</a></h4>
@@ -18,7 +34,7 @@
         {% if meetings %}
         {% for meeting in meetings %} 
             <a href="/meetings/{{ meeting[0] }}">
-                    <div class="meeting_box">
+                <div class="meeting_box">
                     <p>Name: {{ meeting[1] }}</p>
                     <p>Description: {{ meeting[2] }}</p>
                     <p>Location: {{ meeting[4] }}</p>
@@ -26,8 +42,10 @@
                     <p>Status: {{ meeting[9] }}</p>
                 </div>
             </a>
-            <!-- Meeting details -->
-            _________________________
+            <!-- Meeting details 
+             _________________________
+                                        -->
+    
         {% endfor %}
         {% else %}
             <h2>No meetings found</h2>
@@ -38,6 +56,18 @@
         <a href="/createMeeting">New</a>
         {% else %} 
         {% endif %}
+        </div>
+    </div>
+</main>
+<main>
+    <div class="container" style="background-color: brown;">
+        <div class="text-center">
+            <h2>Meetings you are attending.</h2>
+            <!-- Meeting details 
+            {% for meeting in meetings_attending %}
+            {% endfor %}
+            -->
+            <p>Feature in development</p>
         </div>
     </div>
 </main>

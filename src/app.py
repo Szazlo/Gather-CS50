@@ -76,11 +76,13 @@ def dashboard():
     """Dashboard page"""
     # Get user's id from session
     user_id = session["email"]
-
+    update = None
+    
     try:
         update = session["update"]
         session.pop("update", None)
     except KeyError:
+        update = None
         pass
 
     # Check if user  is verified
