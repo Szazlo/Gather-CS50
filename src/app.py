@@ -409,8 +409,7 @@ def displayMeeting(meeting_id):
         return render_template("attendeeMeeting.html", meeting_id=meeting_id, attendees=attendees)
     else:
         return render_template("isPrivate.html", meeting_id=meeting_id)
-
-    
+   
 
 @app.route("/joinMeeting", methods=["GET", "POST"])
 @login_required
