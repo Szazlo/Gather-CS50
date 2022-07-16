@@ -324,10 +324,7 @@ def meetingCreator():
             if form.meeting_dateRangeEnd.data - form.meeting_dateRangeStart.data > timedelta(days=30):
                 error_count += 1
                 form.meeting_dateRangeEnd.errors.append("Selection dates must be less than 30 days")
-            # If user made event public yet still requires a pin
-
-            if form.meeting_public.data == True and form.meeting_pin.data:
-                error_count += 1
+            # If user made event public yet stilsession["email"]= email
                 form.meeting_pin.errors.append("Cannot add PIN to a public event")
 
             if error_count > 0:
@@ -361,19 +358,6 @@ def meetingsSearch():
 @login_required
 def displayMeeting(meeting_id):
     """Use the custom URL to find the meeting."""
-    """PSEUDOCODE FOR THE FOLLOWING FUNCTION:
-    1. Get the meeting_id from the url
-    2. Get the meeting from the database
-    3. Get the user from the database
-    4. Check if the user is the meeting manager
-    5. If the user is the meeting manager, display the meeting information.
-    6. If the user is not the meeting manager, 
-        look at if the meeting is public and ask for the PIN if it is.
-    7. Check if it matches the meeting's pin
-    8. If the pin matches, run the following code
-            * Check if the user is already in the meeting
-            * If the user is not in the meeting, prompt them to join the meeting. The website will remember who the user is based on sessions.
-              *** Do we require sign up?"""
     
     meeting = db.execute("SELECT meeting_id, meeting_public, meeting_manager FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
     if not meeting:
@@ -424,31 +408,35 @@ def joinMeeting():
     else:
         Pin = str(request.form.get("PIN"))
         meeting_id = request.form.get("meeting_id")
-        print(Pin)
-        print(meeting_id)
+        print(f"Pin is {Pin}")
+        print(f"Meeting id requested is {meeting_id}")
         actual_meeting = db.execute("SELECT meeting_id, meeting_pin FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()[0]
-        print(actual_meeting)
+        print(f"DB meeting id and pin are {actual_meeting}")
         if not actual_meeting:
             return apology("Maybe it was deleted", "Meeting does not exist")
 
-        print(actual_meeting[1])
+        print(f"DB meeting's pin is {actual_meeting[1]}")
         if actual_meeting[1] != Pin:
             return render_template("askForPin.html", error="Invalid PIN")
         
         # Add user to meeting
-        attendees = db.execute("SELECT meeting_attendees FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
+        attendees = db.execute("SELECT meeting_attendees FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()[0]
+        print(attendees)
         # If the meeting has no attendees, set the attendees to the user
-        if attendees[0][0] == None:
-            db.execute("UPDATE meetings SET meeting_attendees = ? WHERE meeting_id = ?", (session["email"], meeting_id,))
+        if not attendees[0]:
+            print("No attendees")
+            db.execute("UPDATE meetings SET meeting_attendees = ? WHERE meeting_id = ?", (session["email"]+ ',', meeting_id,))
+            db.execute("INSERT INTO meeting_attendees (meeting_id, email) VALUES (?, ?)", (meeting_id, session["email"],))
             db.commit()        
         else:
             attendees = attendees[0][0].split(",")
+            print(f"Attendees are {attendees}")
             for attendee in attendees:
                 if attendee == session["email"]:
                     return render_template("askForPin.html", error="You are already attending this meeting")
             attendees.append(session["email"])
             attendees = ",".join(attendees)
-            print(attendees)
+            print(f"New attendees are {attendees}")
             print("adding user to meeting")
             db.execute("UPDATE meetings SET meeting_attendees = ? WHERE meeting_id = ?", (attendees, meeting_id))
             print("Inserting user to meeting attendees database")
@@ -468,7 +456,7 @@ def leaveMeeting():
             return apology("This section is under construction", 404)
 
         meeting_id = request.args.get("meeting_id")
-        meeting = db.execute("SELECT meeting_attendees, meeting_manager FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
+        meeting = db.execute("SELECT meeting_attendees FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
         managerCheck = db.execute("SELECT meeting_manager FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
         
         if not meeting:
@@ -481,6 +469,7 @@ def leaveMeeting():
             return apology("You cannot delete your own meeting", "You are the meeting manager")
         
         meeting = meeting[0][0].split(",")
+        print(meeting)
         for attendee in meeting:
             if attendee == session["email"]:
                 meeting.remove(attendee)
@@ -488,7 +477,7 @@ def leaveMeeting():
                 db.execute("UPDATE meetings SET meeting_attendees = ? WHERE meeting_id = ?", (meeting, meeting_id))
                 db.execute("DELETE FROM meeting_attendees WHERE meeting_id = ? AND email = ?", (meeting_id, session["email"]))
                 session["update"] = "Success! You have left the meeting"
-                return redirect("/dashboard") 
+                return redirect("/") 
 
 @app.route("/deleteMeeting/<int:meeting_id>", methods=["GET", "POST"])
 @login_required
