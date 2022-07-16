@@ -476,7 +476,7 @@ def leaveMeeting():
                 meeting = ",".join(meeting)
                 db.execute("UPDATE meetings SET meeting_attendees = ? WHERE meeting_id = ?", (meeting, meeting_id))
                 db.execute("DELETE FROM meeting_attendees WHERE meeting_id = ? AND email = ?", (meeting_id, session["email"]))
-                session["update"] = "Success! You have left the meeting"
+                session["update"] = "You have left the meeting"
                 return redirect("/") 
 
 @app.route("/deleteMeeting/<int:meeting_id>", methods=["GET", "POST"])
