@@ -325,7 +325,7 @@ def meetingCreator():
                 error_count += 1
                 form.meeting_dateRangeEnd.errors.append("Selection dates must be less than 30 days")
             # If user made event public yet stilsession["email"]= email
-                form.meeting_pin.errors.append("Cannot add PIN to a public event")
+            # COMPARE FOR PIN REQUIRED AND PUBLIC STATUS TODO
 
             if error_count > 0:
                 return render_template("createMeeting.html", form=form)
