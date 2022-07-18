@@ -49,7 +49,8 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/", methods=["GET",
+                         "POST"])
 def index():
     """Welcome page"""
     if request.method == "POST":
@@ -136,7 +137,12 @@ def dashboard():
     """
     
     print(request.form.get("update"))
-    return render_template("dashboard.html", username=username, greeting=greeting, meetingsManagingSummary=meetingsManagingSummary, meetingsAttendingSummary=meetingsAttendingSummary, update=update)
+    return render_template("dashboard.html",
+                           username=username,
+                           greeting=greeting,
+                           meetingsManagingSummary=meetingsManagingSummary,
+                           meetingsAttendingSummary=meetingsAttendingSummary,
+                           update=update)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -146,7 +152,8 @@ def register():
     form = registerForm()
 
     if request.method == "GET":
-        return render_template("register.html", form=form)
+        return render_template("register.html",
+                               form=form)
 
     else:
  
@@ -202,7 +209,11 @@ def register():
             hashed_password = str(generate_password_hash(password))
 
             db.execute("INSERT INTO users (username, email, password, firstName, lastName) VALUES (?, ?, ?, ?, ?)", 
-                                          (username, email, hashed_password, firstName, lastName))
+                                          (username, 
+                                           email,
+                                           hashed_password,
+                                           firstName,
+                                           lastName))
             print("Committing changes to database")
             db.commit()
             
@@ -236,9 +247,13 @@ def login():
 
                     return redirect("/")
                 else:
-                    return render_template("login.html", form=form, error="Incorrect password")
+                    return render_template("login.html", 
+                                           form=form, 
+                                           error="Incorrect password")
             else:
-                return render_template("login.html", form=form, error="User does not exist")
+                return render_template("login.html", 
+                                       form=form, 
+                                       error="User does not exist")
 
     if request.method == "GET":
         return render_template("login.html", form=form)
@@ -251,12 +266,13 @@ def passwordReset():
     if request.method == "POST":
         
         if form.validate_on_submit():
-            # Get user's id from database
+             # Get user's id from database
             users = db.execute("SELECT username FROM users").fetchall()
             form.user.choices = [(user[0], user[0]) for user in users]
 
     if request.method == "GET":
-        return render_template("passwordreset.html", form=form)
+        return render_template("passwordreset.html",
+                               form=form)
 
 @app.route("/logout")
 @login_required
@@ -290,14 +306,16 @@ def logout():
     #     print("Error: unable to send email")
     # return render_template("EmailVerification.html")
 
-@app.route("/createMeeting", methods=["GET", "POST"])
+@app.route("/createMeeting", methods=["GET",
+                                      "POST"])
 @login_required
 def meetingCreator():
     """Page to create meetings"""
     form = meetingForm()
 
     if request.method == "GET":
-        return render_template("createMeeting.html", form=form)
+        return render_template("createMeeting.html",
+                               form=form)
  
     else:
         if form.validate_on_submit():
@@ -328,12 +346,20 @@ def meetingCreator():
             # COMPARE FOR PIN REQUIRED AND PUBLIC STATUS TODO
 
             if error_count > 0:
-                return render_template("createMeeting.html", form=form)
+                return render_template("createMeeting.html",
+                                       form=form)
 
             # Database insertion
             db.execute("INSERT INTO meetings (meeting_name, meeting_description, meeting_manager, meeting_location, meeting_dateRangeStart, meeting_dateRangeEnd, meeting_public, meeting_pin, meeting_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", 
-                           (form.meeting_name.data, form.meeting_description.data, session["email"], form.meeting_location.data, form.meeting_dateRangeStart.data,
-                            form.meeting_dateRangeEnd.data, form.meeting_public.data, form.meeting_pin.data, form.meeting_type.data,))
+                           (form.meeting_name.data,
+                            form.meeting_description.data, 
+                            session["email"],
+                            form.meeting_location.data,
+                            form.meeting_dateRangeStart.data,
+                            form.meeting_dateRangeEnd.data, 
+                            form.meeting_public.data, 
+                            form.meeting_pin.data, 
+                            form.meeting_type.data,))
             print("Inserted meeting into database")
             db.commit()
             session["update"] = "Meeting created"
@@ -354,14 +380,16 @@ def meetingsSearch():
 
     return apology("What are you doing here?", "Hello?")
 
-@app.route("/meetings/<int:meeting_id>", methods=["GET", "POST"])
+@app.route("/meetings/<int:meeting_id>", methods=["GET", 
+                                                  "POST"])
 @login_required
 def displayMeeting(meeting_id):
     """Use the custom URL to find the meeting."""
     
     meeting = db.execute("SELECT meeting_id, meeting_public, meeting_manager FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
     if not meeting:
-        return apology("Meeting does not exist", 404)
+        return apology("Meeting does not exist",
+                       404)
 
     meeting = meeting[0]
 
@@ -379,23 +407,31 @@ def displayMeeting(meeting_id):
     if meeting[2] == session["email"]:
         meeting = db.execute("SELECT * FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
         print(meeting)
-        return render_template("AdminMeeting.html", meeting=meeting[0], attendees=attendees)
+        return render_template("AdminMeeting.html",
+                               meeting=meeting[0], 
+                               attendees=attendees)
 
     # Check if user is attending the meeting
     if attendees != None:
         for attendee in attendees:
             if attendee == session["email"]:
                 meeting = db.execute("SELECT * FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
-                return render_template("attendeeMeeting.html", meeting=meeting[0], attendees=attendees)
+                return render_template("attendeeMeeting.html",
+                                       meeting=meeting[0],
+                                       attendees=attendees)
 
     # If above loop fails, check if the meeting is public
     if meeting[1] == True:
-        return render_template("attendeeMeeting.html", meeting_id=meeting_id, attendees=attendees)
+        return render_template("attendeeMeeting.html",
+                               meeting_id=meeting_id,
+                               attendees=attendees)
     else:
-        return render_template("isPrivate.html", meeting_id=meeting_id)
+        return render_template("isPrivate.html",
+                               meeting_id=meeting_id)
    
 
-@app.route("/joinMeeting", methods=["GET", "POST"])
+@app.route("/joinMeeting", methods=["GET",
+                                    "POST"])
 @login_required
 def joinMeeting():
     """Page to join a meeting"""
@@ -403,7 +439,8 @@ def joinMeeting():
     if request.method == "GET":
         if not request.args.get("meeting_id"):
             return apology("How did you get there wtf.", 404)
-        return render_template("askForPin.html", meeting_id=request.args.get("meeting_id"))
+        return render_template("askForPin.html",
+                               meeting_id=request.args.get("meeting_id"))
 
     else:
         Pin = str(request.form.get("PIN"))
@@ -433,7 +470,8 @@ def joinMeeting():
             print(f"Attendees are {attendees}")
             for attendee in attendees:
                 if attendee == session["email"]:
-                    return render_template("askForPin.html", error="You are already attending this meeting")
+                    return render_template("askForPin.html",
+                                           error="You are already attending this meeting")
             attendees.append(session["email"])
             attendees = ",".join(attendees)
             print(f"New attendees are {attendees}")
@@ -453,7 +491,8 @@ def leaveMeeting():
 
     if request.method == "GET":
         if not request.args.get("meeting_id"):
-            return apology("This section is under construction", 404)
+            return apology("This section is under construction", 
+                           404)
 
         meeting_id = request.args.get("meeting_id")
         meeting = db.execute("SELECT meeting_attendees FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
@@ -463,10 +502,12 @@ def leaveMeeting():
             return apology("You are not attending this meeting")
         
         if len(meeting) != 1:
-            return apology("Something went wrong", "Something went wrong")
+            return apology("Something went wrong",
+                           "Something went wrong")
         
         if managerCheck[0][0] == session["email"]:
-            return apology("You cannot delete your own meeting", "You are the meeting manager")
+            return apology("You cannot delete your own meeting", 
+                           "You are the meeting manager")
         
         meeting = meeting[0][0].split(",")
         print(meeting)
@@ -476,20 +517,24 @@ def leaveMeeting():
                 meeting = ",".join(meeting)
                 db.execute("UPDATE meetings SET meeting_attendees = ? WHERE meeting_id = ?", (meeting, meeting_id))
                 db.execute("DELETE FROM meeting_attendees WHERE meeting_id = ? AND email = ?", (meeting_id, session["email"]))
+                db.commit()
                 session["update"] = "You have left the meeting"
                 return redirect("/") 
 
-@app.route("/deleteMeeting/<int:meeting_id>", methods=["GET", "POST"])
+@app.route("/deleteMeeting/<int:meeting_id>", methods=["GET", 
+                                                       "POST"])
 @login_required
 def deleteMeeting(meeting_id):
     """Page to delete a meeting"""
     meeting = db.execute("SELECT meeting_id, meeting_manager FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
     if not meeting:
-        return apology("Meeting does not exist", 404)
+        return apology("Meeting does not exist",
+                       404)
     
     meeting = meeting[0]
     if meeting[1] != session["email"]:
-        return apology("You are not the meeting manager", 403)
+        return apology("You are not the meeting manager",
+                       403)
     
     db.execute("DELETE FROM meetings WHERE meeting_id = ?", (meeting_id,))
     db.execute("DELETE FROM meeting_attendees WHERE meeting_id = ?", (meeting_id,))
