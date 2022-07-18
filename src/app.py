@@ -6,8 +6,7 @@ from functools import wraps
 from flask import Flask, render_template, request, make_response, redirect, session, url_for, g
 from flask_session import Session
 from flask_wtf import FlaskForm
-from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime as dt, date, timedelta
+from datetime import datetime as dt, timedelta, date
 from wtforms import DecimalField
 from forms import *
 from database import get_db, close_db
@@ -425,6 +424,53 @@ def displayMeeting(meeting_id):
         return render_template("attendeeMeeting.html",
                                meeting_id=meeting_id,
                                attendees=attendees)
+        """ PSEUDOCODE FOR MEETING AVAILABILITY IN CALENDAR FORMAT
+         If the meeting is set by the manager on a specific day, do not show the availability section
+         If the meeting is set by the manager on a range of days, show the availability section
+            In this section:
+                Get the meeting's start and end dates
+                Look at the length of the meeting ends
+                As the calendar only shows 30 days, add an equal number of days to both before the start date
+                and after the end date so it matches the 30 day format.
+
+                Create the 30 day calendar.
+                For each day in the 30 day calendar:
+                    If the day is in the range of the meeting's start and end dates:
+                        Display the day as available (Probably add the status of the day as available)
+                    Else:
+                        Display the day as unavailable
+                    
+                    My 2 ways of doing this are.
+                    Let each day be a list of lists, with each day having 3 components:
+                        1. The day of the month
+                        2. The month
+                        3. The status of the day (available, unavailable, etc.):
+                            Options would be:
+                                * Available
+                                * Selected
+                                * Unavailable (Because it is not in the range)
+
+                                In the future, I want to add more options like:
+                                * Definetely available
+                                * Possibly available
+                                * Definitely unavailable
+                                
+                                For example, if I chose the day available to be the 17th of July, the day's list would be:
+                                [17, 7, "Available"]
+
+                    The calendar is a list of lists, with each list being a day, with each day having 3 basic characteristics.
+                    The user's available days will be validated and added to the database of meeting_attendees
+                    *** Note: Add columnn to the meeting_attendees.
+                    
+                    The manipulation of availability calculation and display will be determined by the third characteristic
+                    of the day's list.
+
+                    Probably will use Python's calendar module to create the calendar, or whatever.
+
+                    For the display, I will use some grid or flex, with Jinja using the {{ if something in list}} statements 
+                    nested inside a for loop. The for loop will iterate through the calendar, and the if statement will 
+                    determine how to display the day in the calendar.
+        """
     else:
         return render_template("isPrivate.html",
                                meeting_id=meeting_id)
