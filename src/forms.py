@@ -31,13 +31,16 @@ class meetingForm(FlaskForm):
     meeting_name = StringField(validators=[InputRequired()])
     meeting_description = StringField()
     meeting_location = StringField()
-    meeting_dateRangeStart = DateField(validators=[InputRequired()])
-    meeting_dateRangeEnd = DateField(validators=[InputRequired()])
+    meeting_setDate = DateField()
+    meeting_startTime = TimeField()
+    meeting_dateRangeStart = DateField()
+    meeting_dateRangeEnd = DateField()
     meeting_selectionPeriod = NumberRange(min=1, max=24)
-    meeting_types = ["Select Type", "Social Event", "Meeting", "Orgy", "Other"]
+    meeting_types = ["Select Type", "Social Event", "Meeting", "Charity Event", "Other"]
     meeting_type= SelectField(choices=(meeting_types), validators=[InputRequired()])
     # L-> Will be a dropdown.
+    meeting_typeOther = StringField(validators=[Length(min=3, max=20)])
     meeting_public = BooleanField()
-    meeting_pin = StringField(validators=[InputRequired(), Length(min=6, max=8)])
+    meeting_password = StringField(validators=[Length(min=6, max=8)])
     
     submit = SubmitField("Create")

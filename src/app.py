@@ -27,7 +27,6 @@ app.config["APP_NAME"] = "Gather"
 
 Session(app)
 
-
 @app.after_request
 def after_request(response):
     """Ensure responses aren't cached"""
@@ -325,11 +324,17 @@ def meetingCreator():
                 error_count += 1
                 form.meeting_name.errors.append("Meeting name must be less than 50 characters")
 
-            
             if len(form.meeting_description.data) > 250:
                 error_count += 1
                 form.meeting_description.errors.append("Meeting description must be less than 250 characters")
 
+            # If the "Other" option is selected, replace the "Other" text with the actual value
+            if form.meeting_type.data == "Other" and form.meeting_typeOther.data:
+                form.meeting_type.data = form.meeting_typeOther.data
+            else:
+                error_count +=1
+                form.meeting_type.errors.append("Please select a valid meeting type")
+                
             if form.meeting_dateRangeStart.data < date.today():
                 error_count += 1
                 form.meeting_dateRangeStart.errors.append("Start date must be in the future")
@@ -350,15 +355,15 @@ def meetingCreator():
 
             # Database insertion
             db.execute("INSERT INTO meetings (meeting_name, meeting_description, meeting_manager, meeting_location, meeting_dateRangeStart, meeting_dateRangeEnd, meeting_public, meeting_pin, meeting_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", 
-                           (form.meeting_name.data,
-                            form.meeting_description.data, 
-                            session["email"],
-                            form.meeting_location.data,
-                            form.meeting_dateRangeStart.data,
-                            form.meeting_dateRangeEnd.data, 
-                            form.meeting_public.data, 
-                            form.meeting_pin.data, 
-                            form.meeting_type.data,))
+                                            (form.meeting_name.data,
+                                             form.meeting_description.data, 
+                                             session["email"],
+                                             form.meeting_location.data,
+                                             form.meeting_dateRangeStart.data,
+                                             form.meeting_dateRangeEnd.data, 
+                                             form.meeting_public.data, 
+                                             form.meeting_password.data, 
+                                             form.meeting_type.data,))
             print("Inserted meeting into database")
             db.commit()
             session["update"] = "Meeting created"

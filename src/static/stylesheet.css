@@ -7,29 +7,29 @@ body, html {
   background-color: #2D2D3F;
   color: #FFFFFF;
   height: 100vh;
-  }
+}
 
 header {
   position: fixed;
   padding: 10px 0px 10px 0px;
   top: 0;
   width: 100%;
-  /* Height of the footer*/ 
+  /* Height of the footer*/
   height: var(--hval);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-#logoremain{
-    background: transparent;
-    border: none;
+#logoremain {
+  background: transparent;
+  border: none;
 }
 
 .welcomepage > p {
   margin-left: 20%;
   margin-right: 20%;
-  }
+}
 
 .welcomepage p:last-of-type, .loginpage p:last-of-type, .registerpage p:last-of-type {
   margin-top: 1em;
@@ -74,14 +74,14 @@ main {
   height: 100%;
   padding-top: var(--hval);
   padding-bottom: 20px;
-  }
+}
 
 footer {
   position: fixed;
   padding: 10px 10px 10px 10px;
   bottom: 0;
   width: 100%;
-  /* Height of the footer*/ 
+  /* Height of the footer*/
   height: 20px;
   background: var(--brandcolour);
   display: flex;
@@ -91,27 +91,27 @@ footer {
 .logotext {
   color: var(--brandcolour);
   font-size: 3em;
-  font-family: 'Dancing Script', cursive;
+  font-family: "Dancing Script", cursive;
   font-weight: 300;
   text-align: center;
   text-decoration: none;
   padding-top: 2%;
-  }
+}
 
 a {
   color: var(--brandcolour);
   text-decoration: none;
-  }
+}
 
 #submit, .welcomepage button {
-    border:none;
-    border-radius:1.5rem;
-    padding: 0.5rem 1rem;
-    width: 8rem;
-    cursor: pointer;
-    background: var(--brandcolour);
-    color: #fff;
-    font-weight: 500;
+  border: none;
+  border-radius: 1.5rem;
+  padding: 0.5rem 1rem;
+  width: 8rem;
+  cursor: pointer;
+  background: var(--brandcolour);
+  color: #fff;
+  font-weight: 500;
 }
 
 #togglePassword {
@@ -121,11 +121,11 @@ a {
 }
 
 #meeting_type {
-    padding: 0.5rem 1rem;
-    border: 1px solid #6A6A6A;
-    border-radius: 1.5rem;
-    background-color: transparent;
-    color: #6A6A6A;
+  padding: 0.5rem 1rem;
+  border: 1px solid #6A6A6A;
+  border-radius: 1.5rem;
+  background-color: transparent;
+  color: #6A6A6A;
 }
 
 #ACd5s {
@@ -134,14 +134,13 @@ a {
 }
 
 #email {
-    padding: 0.5rem 1rem;
-    border: 1px solid #6A6A6A;
-    border-radius: 1.5rem;
-    background-color: transparent;
+  padding: 0.5rem 1rem;
+  border: 1px solid #6A6A6A;
+  border-radius: 1.5rem;
+  background-color: transparent;
 }
 
-
-input{
+input {
   color: white;
   padding: 0.5rem 1rem;
   border: 1px solid #6A6A6A;
@@ -160,3 +159,23 @@ input{
   color: #FFFFFF;
   padding: 1rem;
 }
+
+/* For the meeting creation page */
+#OtherType {
+  display: none;
+  position: static;
+  transition: display 0.5s;
+}
+
+#OtherType.show {
+  display: block;
+  text-align: left;
+}
+#OtherType.show p {
+  margin: 5px;
+}
+
+#OtherTypeCounter {
+  color: green;
+  font-size: medium;
+}/*# sourceMappingURL=stylesheet.css.map */

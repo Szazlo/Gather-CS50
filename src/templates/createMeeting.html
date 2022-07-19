@@ -7,16 +7,18 @@
 {% block main_content %}
 <main>
     <div class ="container">
-        <div class="text-center">
             <h2><b>Create a Meeting</b></h2>
             <form action="/createMeeting" method="POST">
                 {{ form.hidden_tag() }}
+
                 {{ form.meeting_name(placeholder="Meeting Name") }}
                 <br>
                 <br>
+
                 {{ form.meeting_description(placeholder="Description") }}
                 <br>
                 <br>
+
                 {{ form.meeting_location(placeholder="Location") }}
                 {% for error in form.meeting_location.errors %}
                     <p class="error">{{ error }}</p>
@@ -24,14 +26,39 @@
                     <br>
                 {% endfor %}
                 <br>
+
                 {{ form.meeting_type(placeholder="Type") }}
-                <!-- Some dropdown. Reference: /forms.py (Row 31)-->
                 {% for error in form.meeting_type.errors %} 
                     <p class="error">{{ error }}</p>
                 {% else %} 
                     <br>
                 {% endfor %}
+                <div class="" id="OtherType">
+                    <p id="OtherTypeCounter">Characters left: 20</p>
+                    {{ form.meeting_typeOther(placeholder="Type Other", oninput="OtherTypeInput()") }}
+                    {% for error in form.meeting_typeOther.errors %} 
+                    <p class="error">{{ error }}</p>
+                    {% else %} 
+                    <br>
+                    {% endfor %}
+                </div>
                 <br>
+                {{ form.meeting_setDate() }}
+                {% for error in form.meeting_setDate.errors %} 
+                    <p class="error">{{ error }}</p>
+                {% else %} 
+                    <br>
+                {% endfor %}
+                <br>
+
+                <label for="meeting_startTime">Meeting on at</label>
+                {{ form.meeting_startTime() }}
+                {% for error in form.meeting_startTime.errors %} 
+                    <p class="error">{{ error }}</p>
+                {% else %} 
+                    <br>
+                {% endfor %}
+
                 {{ form.meeting_dateRangeStart(label="Selection Start Date") }}
                 {% for error in form.meeting_dateRangeStart.errors %} 
                     <p class="error">{{ error }}</p>
@@ -39,6 +66,7 @@
                     <br>
                 {% endfor %}
                 <br>
+
                 {{ form.meeting_dateRangeEnd(label="Selection End Date") }}
                 {% for error in form.meeting_dateRangeEnd.errors %} 
                     <p class="error">{{ error }}</p>
@@ -46,8 +74,9 @@
                     <br>
                 {% endfor %}
                 <br>
-                {{ form.meeting_public(label="Public") }}
+
                 <label id="ACd5s" for="meeting_public"> Make event public</label>
+                {{ form.meeting_public(label="Public") }}
                 {% for error in form.meeting_public.errors %} 
                     <p class="error">{{ error }}</p>
                 {% else %}
@@ -55,9 +84,9 @@
                 {% endfor %}
                 <!-- Some JS that will block the prompt for a pin if the public option is selected -->
                 <br>
-                <label for="meeting_pin">Choose a pin for your attendees to access.</label>
-                {{ form.meeting_pin(placeholder="PIN") }}
-                {% for error in form.meeting_pin.errors %} 
+
+                {{ form.meeting_password(placeholder="Meeting password") }}
+                {% for error in form.meeting_password.errors %} 
                     <p class="error">{{ error }}</p>
                 {% else %}
                     <br>
@@ -70,7 +99,6 @@
                     {{ form.submit(label="Create Meeting") }}
                 {% endif %}
             </form>
-        </div>
     </div>
 </main>
 {% endblock %}
