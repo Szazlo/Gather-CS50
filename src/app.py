@@ -27,13 +27,13 @@ app.config["APP_NAME"] = "Gather"
 
 Session(app)
 
-@app.after_request
-def after_request(response):
-    """Ensure responses aren't cached"""
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    response.headers["Expires"] = 0
-    response.headers["Pragma"] = "no-cache"
-    return response
+# @app.after_request
+# def after_request(response):
+#     """Ensure responses aren't cached"""
+#     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+#     response.headers["Expires"] = 0
+#     response.headers["Pragma"] = "no-cache"
+#     return response
 
 def login_required(f):
     ''' Decorator to check if user is logged in '''
@@ -215,7 +215,7 @@ def register():
             print("Committing changes to database")
             db.commit()
             
-            # Add user to session
+            # Add user to sessionform
             session["email"]= form.email.data
 
             return redirect("/")
@@ -439,7 +439,7 @@ def displayMeeting(meeting_id):
                 and after the end date so it matches the 30 day format.
 
                 Create the 30 day calendar.
-                For each day in the 30 day calendar:
+                For each day in the 30 day calendar:20220611_140956909898_2.jpg
                     If the day is in the range of the meeting's start and end dates:
                         Display the day as available (Probably add the status of the day as available)
                     Else:
@@ -597,7 +597,7 @@ def deleteMeeting(meeting_id):
 @app.route("/playground", methods=["GET"])
 def playground():
     """Page to test out new features"""
-    return render_template("playground.html")
+    return render_template("Denis.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
