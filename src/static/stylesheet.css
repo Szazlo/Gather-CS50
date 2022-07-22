@@ -68,12 +68,31 @@ input[type=checkbox] {
 }
 
 main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   height: 100%;
   padding-top: var(--hval);
   padding-bottom: 20px;
+}
+
+#dashboard{
+  display: flex;
+  align-items: flex-start;
+  justify-content: start;
+  flex-direction: column;
+  margin-left: 1em;
+}
+
+#db-center{
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.meetings {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  margin-top: 1em;
 }
 
 footer {
@@ -151,13 +170,14 @@ input {
 .meeting_box {
   display: flex;
   flex-direction: column;
-  align-items: left;
+  align-items: flex-start;
   justify-content: center;
-  width: 100%;
-  height: 100%;
-  background-color: red;
-  color: #FFFFFF;
-  padding: 1rem;
+  width: 200px;
+  height: 200px;
+  background-color: transparent;
+  color: white;
+  border-radius: 1em;
+  border: 1px solid #6A6A6A;
 }
 
 /* For the meeting creation page */
