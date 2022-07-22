@@ -172,17 +172,36 @@ input {
   padding : 20px 20px;
 }
 
+.meeting_box:hover {
+  transform: scale(1.1);
+  color: var(--brandcolour);
+}
+
+.meeting_box:hover p {
+  color: var(--brandcolour);
+}
+
+.meeting_box:hover #plus {
+  fill: var(--brandcolour);
+}
+
+.meeting_box p {
+  color: #a6a6a6;
+  margin-bottom: 0;
+}
+
 .meeting_box {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: auto;
+  width: 150px;
   height: 150px;
   background-color: transparent;
   color: white;
   border-radius: 1em;
   border: 1px solid #6A6A6A;
+  transition: .5s;
 }
 
 /* For the meeting creation page */
