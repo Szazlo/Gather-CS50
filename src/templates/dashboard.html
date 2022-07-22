@@ -31,11 +31,11 @@
         {% for meeting in meetingsManagingSummary %} 
             <a href="/meetings/{{ meeting[0] }}">
                 <div class="meeting_box">
-                    <p>Name: {{ meeting[1] }}</p>
-                    <p>Description: {{ meeting[2] }}</p>
-                    <p>Location: {{ meeting[4] }}</p>
-                    <p>Attendees: Feature not developed yet</p> 
-                    <p>Status: {{ meeting[9] }}</p>
+                    <p  class="dash-p">Name: {{ meeting[1] }}</p>
+                    <p  class="dash-p">Description: {{ meeting[2] }}</p>
+                    <p  class="dash-p">Location: {{ meeting[4] }}</p>
+                    <p  class="dash-p">Attendees: Feature not developed yet</p> 
+                    <p  class="dash-p">Status: {{ meeting[9] }}</p>
                 </div>
             </a>
             <!-- Meeting details 
@@ -46,7 +46,7 @@
         {% endif %}
         <a href="/createMeeting">
         <div class="meeting_box">
-            <p>Click to create one!</p>
+            <p class="dash-p">Click to create one!</p>
         </div>
         </a>
         <br>
