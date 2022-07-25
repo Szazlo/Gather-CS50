@@ -94,7 +94,6 @@ def dashboard():
         if meetingsManagingSummary[0][0] is None or not meetingsManagingSummary:
             meetingsManagingSummary = None
     except:
-        print("")
         pass
 
     try:
@@ -148,9 +147,7 @@ def register():
         print("Committing changes to database")
         db.commit()
         
-        # Add user to sessionform
         session["email"]= email
-
         return redirect("/")
         
     else:
@@ -168,7 +165,6 @@ def login():
         email = str(form.email.data).lower()
         password = str(form.password.data)
         user = db.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchall()
-        print(user)
 
         if len(user) != 1:
             return render_template("login.html", 

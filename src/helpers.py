@@ -1,8 +1,11 @@
-from flask import redirect, render_template, session
-from functools import wraps
+import random
 import sqlite3
-import string, random
+import string
 from datetime import datetime as dt
+from functools import wraps
+
+from flask import redirect, render_template, session
+
 
 def login_required(f):
     """Requires user to be logged in.
