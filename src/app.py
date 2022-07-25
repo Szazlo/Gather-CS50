@@ -13,7 +13,7 @@ from database import get_db, close_db
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
-from helpers import apology, isRoleBasedEmail, create_activation_link
+from helpers import *
 
 app = Flask(__name__)
 
@@ -27,13 +27,13 @@ app.config["APP_NAME"] = "Gather"
 
 Session(app)
 
-# @app.after_request
-# def after_request(response):
-#     """Ensure responses aren't cached"""
-#     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-#     response.headers["Expires"] = 0
-#     response.headers["Pragma"] = "no-cache"
-#     return response
+@app.after_request
+def after_request(response):
+    """Ensure responses aren't cached"""
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Expires"] = 0
+    response.headers["Pragma"] = "no-cache"
+    return response
 
 def login_required(f):
     ''' Decorator to check if user is logged in '''
@@ -96,15 +96,6 @@ def dashboard():
     if username == None:
         return redirect("/logout") 
 
-    currentTime = dt.now()
-    greeting = ""
-    if currentTime.hour < 12:
-        greeting = "Good morning"
-    elif 12 <= currentTime.hour < 18:
-        greeting = "Good afternoon"
-    else:
-        greeting = "Good evening"
-
     # Show meetings created by user
     meetingsManagingSummary = db.execute("SELECT * FROM meetings WHERE meeting_manager = ?", (user_id,)).fetchall()
     
@@ -137,7 +128,7 @@ def dashboard():
     print(request.form.get("update"))
     return render_template("dashboard.html",
                            username=username,
-                           greeting=greeting,
+                           greeting=timeBasedGreeting(),
                            meetingsManagingSummary=meetingsManagingSummary,
                            meetingsAttendingSummary=meetingsAttendingSummary,
                            update=update)

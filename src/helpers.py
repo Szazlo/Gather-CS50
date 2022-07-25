@@ -6,6 +6,7 @@ from database import get_db
 import email
 import sqlite3
 import string, random
+from datetime import datetime as dt
 
 def login_required(f):
     """Requires user to be logged in.
@@ -61,4 +62,12 @@ def apology(message, code=400):
     * Parameter 2: HTTP status code
     """
     return render_template("apology.html", description=message, code=code)
-        
+
+def timeBasedGreeting():
+    currentTime = dt.now()
+    if currentTime.hour < 12:
+        return "Good morning"
+    elif 12 <= currentTime.hour < 18:
+        return "Good afternoon"
+    else:
+        return "Good evening"
