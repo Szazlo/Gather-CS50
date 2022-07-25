@@ -65,13 +65,14 @@ class meetingForm(FlaskForm):
 def registerValidator(form, isValid=True):
     """
     Register Form Validator
+    
     Checklist:
     1. Username is not taken
     2. Email is not taken
-    3. Email is not Role Based, e.g. marketing@gmail.com
+    3. Email is not role based, e.g. marketing@gmail.com
     4. Password is at least 8 characters long
-    5. Password and Confirm Password match
-    6. Password has lowercase, uppercase, number, and special character
+    5. Password has lowercase, uppercase, number, and special character
+    6. Password and confirm password match
     """
     
     db = sqlite3.connect('app.db', check_same_thread=False)

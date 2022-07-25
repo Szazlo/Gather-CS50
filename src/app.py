@@ -4,6 +4,7 @@ from datetime import timedelta
 from functools import wraps
 from pipes import Template
 from urllib import response
+from colorama import Fore, Style
 
 from flask import (Flask, g, make_response, redirect, render_template, request,
                    session, url_for)
@@ -46,14 +47,13 @@ def index():
     if request.method == "GET":
     # Render dashboard if user is logged in
 
-        print("Checking for session id")
+        print(Fore.LIGHTBLUE_EX + f"Checking for session id{Style.RESET_ALL}")
         try:
             if session["email"]:
-                print("Session id found")
-                print(session["email"])
+                print(f"Session id found: {Fore.GREEN}{session['email']}{Style.RESET_ALL}")
                 return redirect("/dashboard")
         except:
-            print("No user logged in")
+            print(f"{Fore.RED}No user logged in{Style.RESET_ALL}")
             return render_template("welcome.html")
 
             
