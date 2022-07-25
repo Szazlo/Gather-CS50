@@ -1,11 +1,7 @@
-import re
-import smtplib
 import sqlite3
 from datetime import date
-from datetime import datetime as dt
 from datetime import timedelta
 from functools import wraps
-from itertools import product
 from pipes import Template
 from urllib import response
 
@@ -13,9 +9,7 @@ from flask import (Flask, g, make_response, redirect, render_template, request,
                    session, url_for)
 from flask_wtf import FlaskForm
 from werkzeug.security import check_password_hash, generate_password_hash
-from wtforms import DecimalField
 
-from database import close_db, get_db
 from flask_session import Session
 from forms import *
 from helpers import *
@@ -134,67 +128,28 @@ def register():
 
     form = registerForm()
     if request.method == "POST" and form.validate_on_submit():
-
+        
+        validator = registerValidator(form)
+        if validator[1] != True:
+            return render_template("register.html", form=validator[0])
+                    
         firstName = str(form.firstName.data)
         lastName = str(form.lastName.data)
-        username = db.execute("SELECT username FROM users WHERE username = ?", (form.username.data,)).fetchall()
-
-        if len(username) == 1:
-            form.username.errors.append("Username already exists")
-            return render_template("register.html", form=form)
-        
         username = str(form.username.data)
-
-        if isRoleBasedEmail(form.email.data):
-            form.email.errors.append("Email is not valid")
-            return render_template("register.html", form=form)
-
-        email = db.execute("SELECT email FROM users WHERE email = ?", 
-                            (form.email.data,)).fetchall()
-        if len(email) != 0:
-            form.email.errors.append("Email already exists")
-            return render_template("register.html", form=form)
-
-        email = str(form.email.data)
-
-        password = form.password.data
-        passwordErrors = 0
-        if not any(char.isdigit() for char in password):
-            passwordErrors += 1
-            form.password.errors.append("Password must contain at least one number")
-        if not any(char.isalpha() for char in password):
-            passwordErrors += 1
-            form.password.errors.append("Password must contain at least one letter")
-        if not any(char.isupper() for char in password):
-            passwordErrors += 1
-            form.password.errors.append("Password must contain at least one uppercase letter")
-        if not any(char.islower() for char in password):
-            passwordErrors += 1
-            form.password.errors.append("Password must contain at least one lowercase letter")
-        if not any(not char.isalnum() for char in password):
-            passwordErrors += 1
-            form.password.errors.append("Password must contain a symbol")
-
-        if passwordErrors > 0:
-            return render_template("register.html", form=form)
-            
-        if form.confirmPassword.data != password:
-            form.confirmPassword.errors.append("Passwords do not match")
-            return render_template("register.html", form=form)
-        
-        hashed_password = str(generate_password_hash(password))
+        email = str(form.email.data).lower()      
+        hashed_password = str(generate_password_hash(form.password.data))
 
         db.execute("INSERT INTO users (username, email, password, firstName, lastName) VALUES (?, ?, ?, ?, ?)", 
                                         (username, 
-                                        email,
-                                        hashed_password,
-                                        firstName,
-                                        lastName))
+                                         email,
+                                         hashed_password,
+                                         firstName,
+                                         lastName))
         print("Committing changes to database")
         db.commit()
         
         # Add user to sessionform
-        session["email"]= form.email.data
+        session["email"]= email
 
         return redirect("/")
         

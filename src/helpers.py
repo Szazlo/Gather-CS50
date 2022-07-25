@@ -1,9 +1,5 @@
-import os
-import requests
-from flask import redirect, render_template, request, session, g
+from flask import redirect, render_template, session
 from functools import wraps
-from database import get_db
-import email
 import sqlite3
 import string, random
 from datetime import datetime as dt
