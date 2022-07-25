@@ -40,17 +40,6 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
-def login_required(f):
-    ''' Decorator to check if user is logged in '''
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        try:
-            if session["email"]:
-                print("User is logged in")
-        except KeyError:
-            return redirect("/login")
-        return f(*args, **kwargs)
-    return decorated_function
 
 @app.route("/", methods=["GET",
                          "POST"])
