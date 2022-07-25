@@ -252,9 +252,12 @@ def login():
     else:
         return render_template("login.html", form=form)
 
+
 @app.route("/passwordreset", methods=["GET", "POST"])
 def passwordReset():
+    """ DELETE THIS SHIT BEFORE DEPLOYING """
     form = passwordresetForm()
+    
     users = db.execute("SELECT username FROM users").fetchall()
     form.user.choices = [(user[0], user[0]) for user in users]
     if request.method == "POST":
@@ -380,6 +383,7 @@ def meetingsSearch():
 
     return apology("What are you doing here?", "Hello?")
 
+
 @app.route("/meetings/<int:meeting_id>", methods=["GET", 
                                                   "POST"])
 @login_required
@@ -403,6 +407,7 @@ def displayMeeting(meeting_id):
             attendees = None
     except:
         attendees = None
+        
     # Page for meeting manager
     if meeting[2] == session["email"]:
         meeting = db.execute("SELECT * FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
@@ -504,12 +509,15 @@ def joinMeeting():
             return render_template("askForPin.html", error="Invalid PIN")
         
         # Add user to meeting
-        attendees = db.execute("SELECT meeting_attendees FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()[0]
+        attendees = db.execute("SELECT meeting_attendees FROM meetings WHERE meeting_id = ?",
+                               (meeting_id,)).fetchall()[0]
         print(attendees)
         # If the meeting has no attendees, set the attendees to the user
         if not attendees[0]:
             print("No attendees")
-            db.execute("UPDATE meetings SET meeting_attendees = ? WHERE meeting_id = ?", (session["email"]+ ',', meeting_id,))
+            db.execute("UPDATE meetings SET meeting_attendees = ? WHERE meeting_id = ?", 
+                       (session["email"]+ ',',
+                        meeting_id,))
             db.execute("INSERT INTO meeting_attendees (meeting_id, email) VALUES (?, ?)", (meeting_id, session["email"],))
             db.commit()        
         else:
@@ -531,6 +539,7 @@ def joinMeeting():
 
         return redirect("/meetings/" + meeting_id)
 
+
 @app.route("/leaveMeeting", methods=["GET", "POST"])
 @login_required
 def leaveMeeting():
@@ -545,6 +554,10 @@ def leaveMeeting():
         meeting = db.execute("SELECT meeting_attendees FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
         managerCheck = db.execute("SELECT meeting_manager FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()
         
+        if managerCheck[0][0] == session["email"]:
+            return apology("You cannot delete your own meeting", 
+                           "You are the meeting manager")
+        
         if not meeting:
             return apology("You are not attending this meeting")
         
@@ -552,9 +565,6 @@ def leaveMeeting():
             return apology("Something went wrong",
                            "Something went wrong")
         
-        if managerCheck[0][0] == session["email"]:
-            return apology("You cannot delete your own meeting", 
-                           "You are the meeting manager")
         
         meeting = meeting[0][0].split(",")
         print(meeting)
@@ -567,6 +577,7 @@ def leaveMeeting():
                 db.commit()
                 session["update"] = "You have left the meeting"
                 return redirect("/") 
+
 
 @app.route("/deleteMeeting/<int:meeting_id>", methods=["GET", 
                                                        "POST"])
