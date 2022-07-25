@@ -116,6 +116,7 @@ def dashboard():
         pass
 
     # Count meeting attendees
+    #TODO 
     """
     for meeting in meetingsManagingSummary:
         attendees = meeting[8].split(", ")
@@ -125,7 +126,6 @@ def dashboard():
             meeting.append(len(attendees))
     """
     
-    print(request.form.get("update"))
     return render_template("dashboard.html",
                            username=username,
                            greeting=timeBasedGreeting(),
@@ -139,106 +139,102 @@ def register():
     """Register page"""
 
     form = registerForm()
+    if request.method == "POST" and form.validate_on_submit():
 
-    if request.method == "GET":
+        firstName = str(form.firstName.data)
+        lastName = str(form.lastName.data)
+        username = db.execute("SELECT username FROM users WHERE username = ?", (form.username.data,)).fetchall()
+
+        if len(username) == 1:
+            form.username.errors.append("Username already exists")
+            return render_template("register.html", form=form)
+        
+        username = str(form.username.data)
+
+        if isRoleBasedEmail(form.email.data):
+            form.email.errors.append("Email is not valid")
+            return render_template("register.html", form=form)
+
+        email = db.execute("SELECT email FROM users WHERE email = ?", 
+                            (form.email.data,)).fetchall()
+        if len(email) != 0:
+            form.email.errors.append("Email already exists")
+            return render_template("register.html", form=form)
+
+        email = str(form.email.data)
+
+        password = form.password.data
+        passwordErrors = 0
+        if not any(char.isdigit() for char in password):
+            passwordErrors += 1
+            form.password.errors.append("Password must contain at least one number")
+        if not any(char.isalpha() for char in password):
+            passwordErrors += 1
+            form.password.errors.append("Password must contain at least one letter")
+        if not any(char.isupper() for char in password):
+            passwordErrors += 1
+            form.password.errors.append("Password must contain at least one uppercase letter")
+        if not any(char.islower() for char in password):
+            passwordErrors += 1
+            form.password.errors.append("Password must contain at least one lowercase letter")
+        if not any(not char.isalnum() for char in password):
+            passwordErrors += 1
+            form.password.errors.append("Password must contain a symbol")
+
+        if passwordErrors > 0:
+            return render_template("register.html", form=form)
+            
+        if form.confirmPassword.data != password:
+            form.confirmPassword.errors.append("Passwords do not match")
+            return render_template("register.html", form=form)
+        
+        hashed_password = str(generate_password_hash(password))
+
+        db.execute("INSERT INTO users (username, email, password, firstName, lastName) VALUES (?, ?, ?, ?, ?)", 
+                                        (username, 
+                                        email,
+                                        hashed_password,
+                                        firstName,
+                                        lastName))
+        print("Committing changes to database")
+        db.commit()
+        
+        # Add user to sessionform
+        session["email"]= form.email.data
+
+        return redirect("/")
+        
+    else:
         return render_template("register.html",
                                form=form)
 
-    else:
- 
-        if form.validate_on_submit():
-
-            firstName = str(form.firstName.data)
-            lastName = str(form.lastName.data)
-            username = db.execute("SELECT username FROM users WHERE username = ?", (form.username.data,)).fetchall()
-
-            if len(username) == 1:
-                form.username.errors.append("Username already exists")
-                return render_template("register.html", form=form)
-            
-            username = str(form.username.data)
-
-            if isRoleBasedEmail(form.email.data):
-                form.email.errors.append("Email is not valid")
-                return render_template("register.html", form=form)
-
-            email = db.execute("SELECT email FROM users WHERE email = ?", 
-                              (form.email.data,)).fetchall()
-            if len(email) != 0:
-                form.email.errors.append("Email already exists")
-                return render_template("register.html", form=form)
-
-            email = str(form.email.data)
-
-            password = form.password.data
-            passwordErrors = 0
-            if not any(char.isdigit() for char in password):
-                passwordErrors += 1
-                form.password.errors.append("Password must contain at least one number")
-            if not any(char.isalpha() for char in password):
-                passwordErrors += 1
-                form.password.errors.append("Password must contain at least one letter")
-            if not any(char.isupper() for char in password):
-                passwordErrors += 1
-                form.password.errors.append("Password must contain at least one uppercase letter")
-            if not any(char.islower() for char in password):
-                passwordErrors += 1
-                form.password.errors.append("Password must contain at least one lowercase letter")
-            if not any(not char.isalnum() for char in password):
-                passwordErrors += 1
-                form.password.errors.append("Password must contain a symbol")
-
-            if passwordErrors > 0:
-                return render_template("register.html", form=form)
-                
-            if form.confirmPassword.data != password:
-                form.confirmPassword.errors.append("Passwords do not match")
-                return render_template("register.html", form=form)
-            
-            hashed_password = str(generate_password_hash(password))
-
-            db.execute("INSERT INTO users (username, email, password, firstName, lastName) VALUES (?, ?, ?, ?, ?)", 
-                                          (username, 
-                                           email,
-                                           hashed_password,
-                                           firstName,
-                                           lastName))
-            print("Committing changes to database")
-            db.commit()
-            
-            # Add user to sessionform
-            session["email"]= form.email.data
-
-            return redirect("/")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    """Login page"""
     form = loginForm()
 
-    if request.method == "POST":
-        if form.validate_on_submit():
-            # Get user's id from database
+    if request.method == "POST" and form.validate_on_submit():
 
-            email = str(form.email.data).lower()
-            password = str(form.password.data)
+        email = str(form.email.data).lower()
+        password = str(form.password.data)
+        user = db.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchall()
+        print(user)
 
-            user = db.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchall()
-            print(user)
+        if len(user) != 1:
+            return render_template("login.html", 
+                                    form=form, 
+                                    error="User does not exist")
 
-            if len(user) != 1:
-                return render_template("login.html", 
-                                       form=form, 
-                                       error="User does not exist")
+        if check_password_hash(user[0][2], password):
 
-            if check_password_hash(user[0][2], password):
-    
-                session["email"] = email
-                return redirect("/")
-            
-            else:
-                return render_template("login.html", 
-                                        form=form, 
-                                        error="Incorrect password")
+            session["email"] = email
+            return redirect("/")
+        
+        else:
+            return render_template("login.html", 
+                                    form=form, 
+                                    error="Incorrect password")
     
     else:
         return render_template("login.html", form=form)
@@ -301,64 +297,62 @@ def meetingCreator():
     """Page to create meetings"""
     form = meetingForm()
 
-    if request.method == "GET":
+    if request.method == "POST" and form.validate_on_submit():
+        # Server side validation
+
+        error_count = 0
+        if len(form.meeting_name.data) > 50:
+            error_count += 1
+            form.meeting_name.errors.append("Meeting name must be less than 50 characters")
+
+        if len(form.meeting_description.data) > 250:
+            error_count += 1
+            form.meeting_description.errors.append("Meeting description must be less than 250 characters")
+
+        # If the "Other" option is selected, replace the "Other" text with the actual value
+        if form.meeting_type.data == "Other" and form.meeting_typeOther.data:
+            form.meeting_type.data = form.meeting_typeOther.data
+        else:
+            error_count +=1
+            form.meeting_type.errors.append("Please select a valid meeting type")
+            
+        if form.meeting_dateRangeStart.data < date.today():
+            error_count += 1
+            form.meeting_dateRangeStart.errors.append("Start date must be in the future")
+        
+        if form.meeting_dateRangeEnd.data < form.meeting_dateRangeStart.data:
+            error_count += 1
+            form.meeting_dateRangeEnd.errors.append("End date must be after start date")
+
+        if form.meeting_dateRangeEnd.data - form.meeting_dateRangeStart.data > timedelta(days=30):
+            error_count += 1
+            form.meeting_dateRangeEnd.errors.append("Selection dates must be less than 30 days")
+        # If user made event public yet stilsession["email"]= email
+        # COMPARE FOR PIN REQUIRED AND PUBLIC STATUS TODO
+
+        if error_count > 0:
+            return render_template("createMeeting.html",
+                                    form=form)
+
+        # Database insertion
+        db.execute("INSERT INTO meetings (meeting_name, meeting_description, meeting_manager, meeting_location, meeting_dateRangeStart, meeting_dateRangeEnd, meeting_public, meeting_pin, meeting_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+                                        (form.meeting_name.data,
+                                            form.meeting_description.data, 
+                                            session["email"],
+                                            form.meeting_location.data,
+                                            form.meeting_dateRangeStart.data,
+                                            form.meeting_dateRangeEnd.data, 
+                                            form.meeting_public.data, 
+                                            form.meeting_password.data, 
+                                            form.meeting_type.data,))
+        print("Inserted meeting into database")
+        db.commit()
+        session["update"] = "Meeting created"
+        return redirect("/dashboard")
+
+    else:
         return render_template("createMeeting.html",
                                form=form)
- 
-    else:
-        if form.validate_on_submit():
-            # Server side validation
-
-            error_count = 0
-            if len(form.meeting_name.data) > 50:
-                error_count += 1
-                form.meeting_name.errors.append("Meeting name must be less than 50 characters")
-
-            if len(form.meeting_description.data) > 250:
-                error_count += 1
-                form.meeting_description.errors.append("Meeting description must be less than 250 characters")
-
-            # If the "Other" option is selected, replace the "Other" text with the actual value
-            if form.meeting_type.data == "Other" and form.meeting_typeOther.data:
-                form.meeting_type.data = form.meeting_typeOther.data
-            else:
-                error_count +=1
-                form.meeting_type.errors.append("Please select a valid meeting type")
-                
-            if form.meeting_dateRangeStart.data < date.today():
-                error_count += 1
-                form.meeting_dateRangeStart.errors.append("Start date must be in the future")
-            
-            if form.meeting_dateRangeEnd.data < form.meeting_dateRangeStart.data:
-                error_count += 1
-                form.meeting_dateRangeEnd.errors.append("End date must be after start date")
-
-            if form.meeting_dateRangeEnd.data - form.meeting_dateRangeStart.data > timedelta(days=30):
-                error_count += 1
-                form.meeting_dateRangeEnd.errors.append("Selection dates must be less than 30 days")
-            # If user made event public yet stilsession["email"]= email
-            # COMPARE FOR PIN REQUIRED AND PUBLIC STATUS TODO
-
-            if error_count > 0:
-                return render_template("createMeeting.html",
-                                       form=form)
-
-            # Database insertion
-            db.execute("INSERT INTO meetings (meeting_name, meeting_description, meeting_manager, meeting_location, meeting_dateRangeStart, meeting_dateRangeEnd, meeting_public, meeting_pin, meeting_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", 
-                                            (form.meeting_name.data,
-                                             form.meeting_description.data, 
-                                             session["email"],
-                                             form.meeting_location.data,
-                                             form.meeting_dateRangeStart.data,
-                                             form.meeting_dateRangeEnd.data, 
-                                             form.meeting_public.data, 
-                                             form.meeting_password.data, 
-                                             form.meeting_type.data,))
-            print("Inserted meeting into database")
-            db.commit()
-            session["update"] = "Meeting created"
-            return redirect("/dashboard")
-
 
 """ The syntax for the following function is as follows:
     After '/meeting/<>' we use the int: to convert the input url after meeting to an int,
@@ -375,7 +369,7 @@ def meetingsSearch():
     return apology("What are you doing here?", "Hello?")
 
 
-@app.route("/meetings/<int:meeting_id>", methods=["GET", 
+@app.route("/meetings/<int:meeting_id>", methods=["GET",
                                                   "POST"])
 @login_required
 def displayMeeting(meeting_id):
@@ -479,13 +473,8 @@ def displayMeeting(meeting_id):
 def joinMeeting():
     """Page to join a meeting"""
 
-    if request.method == "GET":
-        if not request.args.get("meeting_id"):
-            return apology("How did you get there wtf.", 404)
-        return render_template("askForPin.html",
-                               meeting_id=request.args.get("meeting_id"))
-
-    else:
+    if request.method == "POST":
+        
         Pin = str(request.form.get("PIN"))
         meeting_id = request.form.get("meeting_id")
         print(f"Pin is {Pin}")
@@ -530,8 +519,14 @@ def joinMeeting():
 
         return redirect("/meetings/" + meeting_id)
 
+    else:
+        if not request.args.get("meeting_id"):
+            return apology("How did you get there wtf.", 404)
+        return render_template("askForPin.html",
+                               meeting_id=request.args.get("meeting_id"))
 
-@app.route("/leaveMeeting", methods=["GET", "POST"])
+
+@app.route("/leaveMeeting", methods=["GET"])
 @login_required
 def leaveMeeting():
     """Page to leave a meeting"""
@@ -570,8 +565,7 @@ def leaveMeeting():
                 return redirect("/") 
 
 
-@app.route("/deleteMeeting/<int:meeting_id>", methods=["GET", 
-                                                       "POST"])
+@app.route("/deleteMeeting/<int:meeting_id>", methods=["GET"])
 @login_required
 def deleteMeeting(meeting_id):
     """Page to delete a meeting"""
@@ -591,11 +585,6 @@ def deleteMeeting(meeting_id):
     session["update"] = "Meeting deleted"
     return redirect("/dashboard")
 
-
-@app.route("/playground", methods=["GET"])
-def playground():
-    """Page to test out new features"""
-    return render_template("Denis.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
