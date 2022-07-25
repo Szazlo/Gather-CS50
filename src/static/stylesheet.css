@@ -139,7 +139,7 @@ a {
   margin-left: -30px;
 }
 
-#meeting_type {
+#meeting_type, #meeting_dateType {
   padding: 0.5rem 1rem;
   border: 1px solid #6A6A6A;
   border-radius: 1.5rem;
@@ -223,3 +223,27 @@ input {
   color: green;
   font-size: medium;
 }/*# sourceMappingURL=stylesheet.css.map */
+
+#meetingSetDate {
+  display:none;
+}
+
+#meetingSetDate.show {
+  display:block;
+}
+
+#meetingAllowDate {
+  display:none;
+}
+
+#meetingAllowDate.show {
+  display:block;
+}
+
+#meetingPassword {
+  display:none;
+}
+
+#meetingPassword.show {
+  display:block;
+}

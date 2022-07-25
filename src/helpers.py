@@ -16,7 +16,10 @@ def login_required(f):
     """
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not session["email"]:
+        try:
+            if not session["email"]:
+                return redirect("/login")
+        except:
             return redirect("/login")
         return f(*args, **kwargs)
     return decorated_function

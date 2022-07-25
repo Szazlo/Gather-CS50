@@ -47,7 +47,7 @@ def index():
     if request.method == "GET":
     # Render dashboard if user is logged in
 
-        print(Fore.LIGHTBLUE_EX + f"Checking for session id{Style.RESET_ALL}")
+        print(f"{Fore.LIGHTBLUE_EX}Checking for session id{Style.RESET_ALL}")
         try:
             if session["email"]:
                 print(f"Session id found: {Fore.GREEN}{session['email']}{Style.RESET_ALL}")
@@ -252,7 +252,7 @@ def meetingCreator():
 
         if len(form.meeting_description.data) > 250:
             error_count += 1
-            form.meeting_description.errors.append("Meeting description must be less than 250 characters")
+            form.meeting_description.errors.append("Meeting description must be less than 250 characters long.")
 
         # If the "Other" option is selected, replace the "Other" text with the actual value
         if form.meeting_type.data == "Other" and form.meeting_typeOther.data:
@@ -260,7 +260,18 @@ def meetingCreator():
         else:
             error_count +=1
             form.meeting_type.errors.append("Please select a valid meeting type")
+        
+        # If the form date type is not valid, add an error
+        if form.meeting_dateType not in ["Set by me", "Agreed on by everyone"]:
+            error_count += 1
+            form.meeting_dateType.errors.append("Please select a valid date type") 
+        
+        if form.meeting_dateType == "Set by me":
+            form.meeting_dateRangeStart.data = None
+            form.meeting_dateRangeEnd.data = None
+            form.meeting_selectionPeriod.data = None
             
+        
         if form.meeting_dateRangeStart.data < date.today():
             error_count += 1
             form.meeting_dateRangeStart.errors.append("Start date must be in the future")

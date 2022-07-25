@@ -4,10 +4,14 @@
     Create Meeting
 {% endblock %}
 
+{% block bootstrapJS %}
+
+{% endblock %}
+
 {% block main_content %}
 <main>
     <div class ="container">
-            <h2><b>Create a Meeting</b></h2>
+            <h2><b>Create a meeting</b></h2>
             <form action="/createMeeting" method="POST">
                 {{ form.hidden_tag() }}
 
@@ -42,55 +46,74 @@
                     <br>
                     {% endfor %}
                 </div>
+
                 <br>
-                {{ form.meeting_setDate() }}
-                {% for error in form.meeting_setDate.errors %} 
+                <label for="DateType">I want the date to be:</label>
+                {{ form.meeting_dateType() }}
+                {% for error in form.meeting_dateType.errors %} 
                     <p class="error">{{ error }}</p>
                 {% else %} 
                     <br>
                 {% endfor %}
                 <br>
-
-                <label for="meeting_startTime">Meeting on at</label>
-                {{ form.meeting_startTime() }}
-                {% for error in form.meeting_startTime.errors %} 
-                    <p class="error">{{ error }}</p>
-                {% else %} 
+                <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" data-bs-title="Why only one option?" data-bs-content="We are currently working on adding the option Agreed on by everyone.
+                This option would find the dates that would be available by everyone."> Why only one option?
+                </button>
+                <div id="meetingSetDate" class="">
+                    <p>The date will be on: </p>
+                    {{ form.meeting_setDate() }}
+                    {% for error in form.meeting_setDate.errors %} 
+                        <p class="error">{{ error }}</p>
+                    {% else %} 
+                        <br>
+                    {% endfor %}
                     <br>
-                {% endfor %}
 
-                {{ form.meeting_dateRangeStart(label="Selection Start Date") }}
-                {% for error in form.meeting_dateRangeStart.errors %} 
-                    <p class="error">{{ error }}</p>
-                {% else %}
+                    <label for="meeting_startTime">Meeting time will be at</label>
+                    {{ form.meeting_startTime() }}
+                    {% for error in form.meeting_startTime.errors %} 
+                        <p class="error">{{ error }}</p>
+                    {% else %} 
+                        <br>
+                    {% endfor %}
                     <br>
-                {% endfor %}
+                </div>
+                <div id="meetingAllowDate" class="">
+                    <p> Start Date</p>
+                    {{ form.meeting_dateRangeStart() }}
+                    {% for error in form.meeting_dateRangeStart.errors %} 
+                        <p class="error">{{ error }}</p>
+                    {% else %}
+                        <br>
+                    {% endfor %}
+                    <br>
+                    <p> End Date</p>
+                    {{ form.meeting_dateRangeEnd() }}
+                    {% for error in form.meeting_dateRangeEnd.errors %} 
+                        <p class="error">{{ error }}</p>
+                    {% else %}
+                        <br>
+                    {% endfor %}
                 <br>
-
-                {{ form.meeting_dateRangeEnd(label="Selection End Date") }}
-                {% for error in form.meeting_dateRangeEnd.errors %} 
-                    <p class="error">{{ error }}</p>
-                {% else %}
-                    <br>
-                {% endfor %}
-                <br>
+                 </div>
 
                 <label id="ACd5s" for="meeting_public"> Make event public</label>
-                {{ form.meeting_public(label="Public") }}
+                {{ form.meeting_public() }}
                 {% for error in form.meeting_public.errors %} 
                     <p class="error">{{ error }}</p>
                 {% else %}
                     <br>
                 {% endfor %}
-                <!-- Some JS that will block the prompt for a pin if the public option is selected -->
+               
                 <br>
-
-                {{ form.meeting_password(placeholder="Meeting password") }}
-                {% for error in form.meeting_password.errors %} 
-                    <p class="error">{{ error }}</p>
-                {% else %}
-                    <br>
-                {% endfor %}
+                 <div id="meetingPassword" class="">
+                    {{ form.meeting_password(placeholder="Meeting password", autocomplete="off") }}
+                    {% for error in form.meeting_password.errors %} 
+                        <p class="error">{{ error }}</p>
+                    {% else %}
+                        <br>
+                    {% endfor %}
+                </div>
                 {% if daily_limit_reached %}
                     <p class ="error"> You have reached your daily meeting creation.</p>
                     <p class ="error"> Please try again tomorrow, or <a href="">buy more.</a></p>

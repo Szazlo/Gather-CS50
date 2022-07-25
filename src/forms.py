@@ -44,10 +44,12 @@ class passwordresetForm(FlaskForm):
     newpassword = PasswordField(validators=[InputRequired(), Length(min=8)])
     submit = SubmitField("Reset password")
 
+
 class meetingForm(FlaskForm):
     meeting_name = StringField(validators=[InputRequired()])
     meeting_description = StringField()
     meeting_location = StringField()
+    meeting_dateType = SelectField(choices=("Set by me",))
     meeting_setDate = DateField()
     meeting_startTime = TimeField()
     meeting_dateRangeStart = DateField()
@@ -58,9 +60,10 @@ class meetingForm(FlaskForm):
     # L-> Will be a dropdown.
     meeting_typeOther = StringField(validators=[Length(min=3, max=20)])
     meeting_public = BooleanField()
-    meeting_password = StringField(validators=[Length(min=6, max=8)])
+    meeting_password = StringField(validators=[Length(min=8, max=20)])
     
     submit = SubmitField("Create")
+
 
 def registerValidator(form, isValid=True):
     """
