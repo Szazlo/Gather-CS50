@@ -249,7 +249,7 @@ def login():
                                         form=form, 
                                         error="Incorrect password")
     
-    if request.method == "GET":
+    else:
         return render_template("login.html", form=form)
 
 @app.route("/passwordreset", methods=["GET", "POST"])
