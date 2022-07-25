@@ -1,18 +1,23 @@
+import re
+import smtplib
+import sqlite3
+from datetime import date
+from datetime import datetime as dt
+from datetime import timedelta
+from functools import wraps
 from itertools import product
 from pipes import Template
-import re, smtplib
 from urllib import response
-from functools import wraps
-from flask import Flask, render_template, request, make_response, redirect, session, url_for, g
-from flask_session import Session
+
+from flask import (Flask, g, make_response, redirect, render_template, request,
+                   session, url_for)
 from flask_wtf import FlaskForm
-from datetime import datetime as dt, timedelta, date
+from werkzeug.security import check_password_hash, generate_password_hash
 from wtforms import DecimalField
+
+from database import close_db, get_db
+from flask_session import Session
 from forms import *
-from database import get_db, close_db
-import sqlite3
-from werkzeug.security import generate_password_hash, check_password_hash
-from functools import wraps
 from helpers import *
 
 app = Flask(__name__)
