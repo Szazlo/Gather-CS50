@@ -8,15 +8,6 @@ from wtforms.validators import *
 from helpers import isRoleBasedEmail
 
 
-def validateIfInput(min, max, form, field):
-    if field.data:
-        if len(field.data) < min or len(field.data) > max:
-            field.errors.append("Password must be between " +
-                                str(min) + " and " + str(max) + " characters")
-            return False
-        return True
-
-
 class registerForm(FlaskForm):
     firstName = StringField("First Name", validators=[InputRequired()])
     lastName = StringField("Last Name", validators=[InputRequired()])
@@ -42,6 +33,10 @@ class passwordresetForm(FlaskForm):
     submit = SubmitField("Reset password")
 
 
+meeting_types = ["Select Type", "Social Event",
+                 "Meeting", "Charity Event", "Other"]
+
+
 class meetingForm(FlaskForm):
     meeting_name = StringField(validators=[InputRequired()])
     meeting_description = StringField()
@@ -49,19 +44,28 @@ class meetingForm(FlaskForm):
     meeting_dateType = SelectField(choices=("Set by me",))
     meeting_setDate = DateField()
     meeting_startTime = TimeField()
+    # Add back in next version
     # meeting_dateRangeStart = DateField()
     # meeting_dateRangeEnd = DateField()
     # meeting_selectionPeriod = NumberRange(min=1, max=24)
-    meeting_types = ["Select Type", "Social Event",
-                     "Meeting", "Charity Event", "Other"]
     meeting_type = SelectField(
         choices=(meeting_types), validators=[InputRequired()])
     meeting_typeOther = StringField()
     meeting_public = BooleanField()
-    meeting_password = StringField(validateIfInput(min=8, max=20))
+    meeting_password = StringField()
     # I-> TODO. VALIDATE LENGTH ONLY IF THERE IS INPUT
 
     submit = SubmitField("Create")
+
+    def validateIfInput(form, field):
+        min = 8
+        max = 25
+        if form.meeting_password.data:
+            if len(form.meeting_password.data) < min or len(form.meeting_password.data) > max:
+                field.errors.append("Password must be between " +
+                                    str(min) + " and " + str(max) + " characters")
+                return False
+        return True
 
 
 def registerValidator(form, isValid=True):

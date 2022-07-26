@@ -272,10 +272,12 @@ def createMeeting():
         # If the "Other" option is selected, replace the "Other" text with the actual value
         if form.meeting_type.data == "Other" and form.meeting_typeOther.data:
             form.meeting_type.data = form.meeting_typeOther.data
-        else:
+        if form.meeting_type.data != "Other" and form.meeting_typeOther.data:
+            form.meeting_typeOther.data = None
+        if form.meeting_type.data == "Select Type":
             error_count += 1
             form.meeting_type.errors.append(
-                "Please select a valid meeting type")
+                "Please select a meeting type")
 
         # If the form date type is not valid, add an error
         if form.meeting_dateType.data not in ["Set by me", "Agreed on by everyone"]:
@@ -283,26 +285,26 @@ def createMeeting():
             form.meeting_dateType.errors.append(
                 "Please select a valid date type")
 
-        if form.meeting_dateType == "Set by me":
-            form.meeting_dateRangeStart.data = None
-            form.meeting_dateRangeEnd.data = None
-            form.meeting_selectionPeriod.data = None
+        # if form.meeting_dateType == "Set by me":
+        #     form.meeting_dateRangeStart.data = None
+        #     form.meeting_dateRangeEnd.data = None
+        #     form.meeting_selectionPeriod.data = None
 
-        else:
-            if form.meeting_dateRangeStart.data < date.today():
-                error_count += 1
-                form.meeting_dateRangeStart.errors.append(
-                    "Start date must be in the future")
+        # else:
+        #     if form.meeting_dateRangeStart.data < date.today():
+        #         error_count += 1
+        #         form.meeting_dateRangeStart.errors.append(
+        #             "Start date must be in the future")
 
-            if form.meeting_dateRangeEnd.data < form.meeting_dateRangeStart.data:
-                error_count += 1
-                form.meeting_dateRangeEnd.errors.append(
-                    "End date must be after start date")
+        #     if form.meeting_dateRangeEnd.data < form.meeting_dateRangeStart.data:
+        #         error_count += 1
+        #         form.meeting_dateRangeEnd.errors.append(
+        #             "End date must be after start date")
 
-            if form.meeting_dateRangeEnd.data - form.meeting_dateRangeStart.data > timedelta(days=30):
-                error_count += 1
-                form.meeting_dateRangeEnd.errors.append(
-                    "Selection dates must be less than 30 days")
+        #     if form.meeting_dateRangeEnd.data - form.meeting_dateRangeStart.data > timedelta(days=30):
+        #         error_count += 1
+        #         form.meeting_dateRangeEnd.errors.append(
+        #             "Selection dates must be less than 30 days")
 
         if form.meeting_setDate.data < date.today():
             error_count += 1
@@ -322,16 +324,17 @@ def createMeeting():
             return render_template("createMeeting.html",
                                    form=form)
 
+        # setdate = dt.strptime(form.meeting_setDate.data, "%Y-%m-%d")
+        form.meeting_startTime.data = form.meeting_startTime.data.strftime(
+            "%H:%M")
         # Database insertion
-        db.execute("INSERT INTO meetings (meeting_name, meeting_description, meeting_manager, meeting_location, meeting_dateRangeStart, meeting_dateRangeEnd, meeting_public, meeting_pin, meeting_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        db.execute("INSERT INTO meetings (meeting_name, meeting_description, meeting_manager, meeting_location, meeting_setDate, meeting_startTime, meeting_public, meeting_password, meeting_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                    (form.meeting_name.data,
                     form.meeting_description.data,
                     session["email"],
                     form.meeting_location.data,
                     form.meeting_setDate.data,
                     form.meeting_startTime.data,
-                    form.meeting_dateRangeStart.data,
-                    form.meeting_dateRangeEnd.data,
                     form.meeting_public.data,
                     form.meeting_password.data,
                     form.meeting_type.data,))

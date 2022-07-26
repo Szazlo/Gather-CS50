@@ -83,24 +83,24 @@ block bootstrapJS %}
         {% endfor %}
         <br />
       </div>
-      <div id="meetingAllowDate" class="">
+      <!--<div id="meetingAllowDate" class="">
         <p>Start Date</p>
-        {{ form.meeting_dateRangeStart() }} {% for error in
-        form.meeting_dateRangeStart.errors %}
-        <p class="error">{{ error }}</p>
-        {% else %}
+        {# form.meeting_dateRangeStart() #} {# for error in
+        form.meeting_dateRangeStart.errors #}
+        <p class="error">{# error #}</p>
+        {# else #}
         <br />
-        {% endfor %}
+        {# endfor #}
         <br />
         <p>End Date</p>
-        {{ form.meeting_dateRangeEnd() }} {% for error in
-        form.meeting_dateRangeEnd.errors %}
-        <p class="error">{{ error }}</p>
-        {% else %}
+        {# form.meeting_dateRangeEnd() #} {# for error in
+        form.meeting_dateRangeEnd.errors #}
+        <p class="error">{# error #}</p>
+        {# else #}
         <br />
-        {% endfor %}
+        {# endfor #}
         <br />
-      </div>
+      </div> -->
 
       <label id="ACd5s" for="meeting_public"> Make event public</label>
       {{ form.meeting_public() }} {% for error in form.meeting_public.errors %}
