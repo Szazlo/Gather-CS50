@@ -20,8 +20,11 @@ if (dateType.value == "Set by me") {
     document.getElementById("meetingSetDate").classList.add("show");
 }
 
-if (meetingPublic.value == "y") {
+if (meetingPublic.value == true) {
     document.getElementById("meetingPassword").classList.add("show");
+}
+else {
+    document.getElementById("meetingPassword").classList.remove("show");
 }
 
 function OtherTypeDisplay() {
