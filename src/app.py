@@ -9,6 +9,7 @@ from colorama import Fore, Style
 from flask import (Flask, g, make_response, redirect, render_template, request,
                    session, url_for)
 from flask_wtf import FlaskForm
+from sqlalchemy import null
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from flask_session import Session
@@ -324,9 +325,9 @@ def createMeeting():
             return render_template("createMeeting.html",
                                    form=form)
 
-        # setdate = dt.strptime(form.meeting_setDate.data, "%Y-%m-%d")
         form.meeting_startTime.data = form.meeting_startTime.data.strftime(
             "%H:%M")
+
         # Database insertion
         db.execute("INSERT INTO meetings (meeting_name, meeting_description, meeting_manager, meeting_location, meeting_setDate, meeting_startTime, meeting_public, meeting_password, meeting_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                    (form.meeting_name.data,
@@ -430,7 +431,7 @@ def displayMeeting(meeting_id):
                         Display the day as available (Probably add the status of the day as available)
                     Else:
                         Display the day as unavailable
-                    
+
                     My 2 ways of doing this are.
                     Let each day be a list of lists, with each day having 3 components:
                         1. The day of the month
@@ -445,21 +446,21 @@ def displayMeeting(meeting_id):
                                 * Definetely available
                                 * Possibly available
                                 * Definitely unavailable
-                                
+
                                 For example, if I chose the day available to be the 17th of July, the day's list would be:
                                 [17, 7, "Available"]
 
                     The calendar is a list of lists, with each list being a day, with each day having 3 basic characteristics.
                     The user's available days will be validated and added to the database of meeting_attendees
                     *** Note: Add columnn to the meeting_attendees.
-                    
+
                     The manipulation of availability calculation and display will be determined by the third characteristic
                     of the day's list.
 
                     Probably will use Python's calendar module to create the calendar, or whatever.
 
-                    For the display, I will use some grid or flex, with Jinja using the {{ if something in list}} statements 
-                    nested inside a for loop. The for loop will iterate through the calendar, and the if statement will 
+                    For the display, I will use some grid or flex, with Jinja using the {{ if something in list}} statements
+                    nested inside a for loop. The for loop will iterate through the calendar, and the if statement will
                     determine how to display the day in the calendar.
         """
     else:
@@ -475,19 +476,19 @@ def joinMeeting():
 
     if request.method == "POST":
 
-        Pin = str(request.form.get("PIN"))
+        password = str(request.form.get("password"))
         meeting_id = request.form.get("meeting_id")
-        print(f"Pin is {Pin}")
+        print(f"password is {password}")
         print(f"Meeting id requested is {meeting_id}")
         actual_meeting = db.execute(
-            "SELECT meeting_id, meeting_pin FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()[0]
-        print(f"DB meeting id and pin are {actual_meeting}")
+            "SELECT meeting_id, meeting_password FROM meetings WHERE meeting_id = ?", (meeting_id,)).fetchall()[0]
+        print(f"DB meeting id and password are {actual_meeting}")
         if not actual_meeting:
             return apology("Maybe it was deleted", "Meeting does not exist")
 
-        print(f"DB meeting's pin is {actual_meeting[1]}")
-        if actual_meeting[1] != Pin:
-            return render_template("askForPin.html", error="Invalid PIN")
+        print(f"DB meeting's password is {actual_meeting[1]}")
+        if actual_meeting[1] != password:
+            return render_template("askForPassword.html", error="Invalid password")
 
         # Add user to meeting
         attendees = db.execute("SELECT meeting_attendees FROM meetings WHERE meeting_id = ?",
@@ -507,7 +508,7 @@ def joinMeeting():
             print(f"Attendees are {attendees}")
             for attendee in attendees:
                 if attendee == session["email"]:
-                    return render_template("askForPin.html",
+                    return render_template("askForPassword.html",
                                            error="You are already attending this meeting")
             attendees.append(session["email"])
             attendees = ",".join(attendees)
@@ -524,14 +525,28 @@ def joinMeeting():
         return redirect("/meetings/" + meeting_id)
 
     else:
+        # Render the meeting if user is already attending the meeting
+        attendees = db.execute("SELECT meeting_attendees FROM meetings WHERE meeting_id = ?",
+                               (request.args.get("meeting_id"),)).fetchall()[0]
+        print(attendees)
+        if not attendees[0]:
+            return render_template("askForPassword.html",
+                                   meeting_id=request.args.get("meeting_id"))
+        attendees = attendees[0][0].split(",")
+        print(f"Attendees are {attendees}")
+        for attendee in attendees:
+            if attendee == session["email"]:
+                return redirect("/meetings/" + meeting_id)
         if not request.args.get("meeting_id"):
-            return apology("How did you get there wtf.", 404)
-        return render_template("askForPin.html",
+            return apology("This section is under construction", 404)
+
+        # If the user is not attending the meeting, ask for the password
+        return render_template("askForPassword.html",
                                meeting_id=request.args.get("meeting_id"))
 
 
-@app.route("/leaveMeeting", methods=["GET"])
-@login_required
+@ app.route("/leaveMeeting", methods=["GET"])
+@ login_required
 def leaveMeeting():
     """Page to leave a meeting"""
 
@@ -572,8 +587,8 @@ def leaveMeeting():
                 return redirect("/")
 
 
-@app.route("/deleteMeeting/<int:meeting_id>", methods=["GET"])
-@login_required
+@ app.route("/deleteMeeting/<int:meeting_id>", methods=["GET"])
+@ login_required
 def deleteMeeting(meeting_id):
     """Page to delete a meeting"""
     meeting = db.execute(
