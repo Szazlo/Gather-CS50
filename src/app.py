@@ -90,11 +90,17 @@ def dashboard():
         return redirect("/logout")
 
     # Show meetings created by user
+    db.row_factory = sqlite3.Row
+    
+    # TODO: Order by meeting_created_at and show most recent 8
     meetingsManagingSummary = db.execute(
-        "SELECT * FROM meetings WHERE meeting_manager = ?", (user_id,)).fetchall()
+        "SELECT * FROM meetings WHERE meeting_manager = ? LIMIT 8", (user_id,)).fetchall()
+    meetingsManagingSummary = [dict(row) for row in meetingsManagingSummary]
 
-    meetingsAttendingSummary = db.execute("SELECT * FROM meetings JOIN meeting_attendees ON meetings.meeting_id = meeting_attendees.meeting_id WHERE email = ?",
+    meetingsAttendingSummary = db.execute("SELECT * FROM meetings JOIN meeting_attendees ON meetings.meeting_id = meeting_attendees.meeting_id WHERE email = ? LIMIT 8",
                                           (session["email"],)).fetchall()
+    
+    # Make the summary above a dictionary
 
     try:
         if meetingsManagingSummary[0][0] is None or not meetingsManagingSummary:
