@@ -87,13 +87,13 @@ main {
   justify-content: center;
 }
 
-/* .meetings {
+.meetings {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   margin-top: 1em;
-} */
+}
 
 footer {
   position: fixed;
@@ -167,30 +167,51 @@ input {
   background-color: transparent;
 }
 
-.dash-p {
+.dash-pl {
   margin-bottom: 0px;
   padding : 20px 20px;
 }
 
-.meeting_box:hover {
+.dash-p {
+  margin-bottom: 0px;
+  padding : 0;
+}
+
+.meeting_box:hover, #meeting_box:hover {
   transform: scale(1.1);
   color: var(--brandcolour);
 }
 
-.meeting_box:hover p {
+.meeting_box:hover p, #meeting_box:hover p {
   color: var(--brandcolour);
 }
 
-.meeting_box:hover #plus {
+#meeting_box:hover #plus {
   fill: var(--brandcolour);
 }
 
-.meeting_box p {
+.meeting_box p, #meeting_box p {
   color: #a6a6a6;
   margin-bottom: 0;
 }
 
 .meeting_box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 150px;
+  height: 150px;
+  background-color: transparent;
+  color: white;
+  border-radius: 1em;
+  border: 1px solid #6A6A6A;
+  transition: 0.25s;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+#meeting_box {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -201,7 +222,9 @@ input {
   color: white;
   border-radius: 1em;
   border: 1px solid #6A6A6A;
-  transition: .5s;
+  transition: 0.25s;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
 }
 
 /* For the meeting creation page */

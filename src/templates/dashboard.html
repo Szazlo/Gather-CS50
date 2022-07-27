@@ -29,7 +29,7 @@
     <div class="meetings">
         {% if meetingsManagingSummary %}
         {% for meeting in meetingsManagingSummary %} 
-            <a href="/meetings/{{ meeting[0] }}">
+            <a id="firstclass" href="/meetings/{{ meeting[0] }}">
                 <div class="meeting_box">
                     <p class="dash-p">Name: {{ meeting[1] }}</p>
                     <p class="dash-p">Location: {{ meeting[4] }}</p>
@@ -39,13 +39,13 @@
         {% endfor %}
         {% endif %}
         <a href="/createMeeting">
-        <div class="meeting_box">
-            <p>Create New</p>
-            <p class="dash-p" style="padding-bottom: 0;"><svg id = "plus" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6a6a6a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></p>
-        </div>
+            <div id="meeting_box">
+                <p>Create New</p>
+                <p class="dash-pl" style="padding-bottom: 0;"><svg id = "plus" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6a6a6a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></p>
+            </div>
         </a>
-        <br>
-            <!-- <h2>Meetings you are attending.</h2>
+    </div>
+    <!-- <h2>Meetings you are attending.</h2>
             {% for meeting in meetingsAttendingSummary %}
                 <a href="/meetings/{{ meeting[0] }}">
                     <div class="meeting_box">
@@ -59,8 +59,6 @@
             {% else %} 
                 <h2>No meetings found</h2>
             {% endfor %} -->
-
-        </div>
 </div>
 </div>
 </main>
