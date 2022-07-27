@@ -29,7 +29,7 @@
     <div class="meetings">
         {% if meetingsManagingSummary %}
         {% for meeting in meetingsManagingSummary %} 
-            <a href="/meetings/{{ meeting['meeting_id'] }}">
+            <a id="firstclass" href="/meetings/{{ meeting['meeting_id'] }}">
                 <div class="meeting_box">
                     <p class="dash-p">Name: {{ meeting['meeting_name'] }}</p>
                     <p class="dash-p">Location: {{ meeting['meeting_location'] }}</p>
