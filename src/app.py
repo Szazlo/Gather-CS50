@@ -100,7 +100,7 @@ def dashboard():
     meetingsAttendingSummary = db.execute("SELECT * FROM meetings JOIN meeting_attendees ON meetings.meeting_id = meeting_attendees.meeting_id WHERE email = ? LIMIT 8",
                                           (session["email"],)).fetchall()
     
-    # Make the summary above a dictionary
+    # TODO: Make the summary above a dictionary
 
     try:
         if meetingsManagingSummary[0][0] is None or not meetingsManagingSummary:
