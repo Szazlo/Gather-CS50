@@ -84,6 +84,9 @@ def dashboard():
     username = db.execute(
         "SELECT username FROM users WHERE email = ?", (user_id,)).fetchone()[0]
 
+    firstName = db.execute(
+        "SELECT firstName FROM users WHERE email = ?", (user_id,)).fetchone()[0]
+    
     # Failsafe for if the user is not in the database but the session is still active
     if username == None:
         return redirect("/logout")
@@ -98,7 +101,7 @@ def dashboard():
 
     meetingsAttendingSummary = db.execute("SELECT * FROM meetings JOIN meeting_attendees ON meetings.meeting_id = meeting_attendees.meeting_id WHERE email = ? LIMIT 8",
                                           (session["email"],)).fetchall()
-    
+
     # TODO: Make the summary above a dictionary
 
     try:
@@ -125,7 +128,7 @@ def dashboard():
     """
 
     return render_template("dashboard.html",
-                           username=username,
+                           firstName=firstName,
                            greeting=timeBasedGreeting(),
                            meetingsManagingSummary=meetingsManagingSummary,
                            meetingsAttendingSummary=meetingsAttendingSummary,
