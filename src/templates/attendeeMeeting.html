@@ -7,7 +7,7 @@
     <div class="container">
         <div class="text-center">
 
-            <h1>{{ meeting[1] }}</h1>
+            <h2>{{ meeting[1] }}</h2>
             <p>Description: {{ meeting[2] }}</p>
             <p>Manager: {{ meeting[3] }}</p>
             <p>Location: {{ meeting[4] }}</p>
@@ -18,7 +18,7 @@
             {% else %} 
                 <p>No attendees</p>
             {% endfor %}
-            <p><a href="/leaveMeeting?meeting_id={{ meeting[0] }}">Leave</a></p>
+            <p><a class="error" href="/leaveMeeting?meeting_id={{ meeting[0] }}">Leave</a></p>
         </div>
     </div>
 </main>
