@@ -9,7 +9,6 @@ from colorama import Fore, Style
 from flask import (Flask, g, make_response, redirect, render_template, request,
                    session, url_for)
 from flask_wtf import FlaskForm
-from sqlalchemy import null
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from flask_session import Session
