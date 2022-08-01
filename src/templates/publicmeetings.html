@@ -18,10 +18,27 @@
     {% endblock %} {% block main_content %}
     <main>
     <div class="container">
-        <p>Meetings</p>
-        <div class="text-center">
-            <!-- for loop for all public meetings from db -->
-        </div>
+        <h2>Meetings</h2>
+        <table>
+            <tr>
+              <th>Name</th>
+              <th>Date</th>
+              <th>Location</th>
+              <th>Organizer</th>
+            </tr>
+            <tr>
+              <td>The meat</td>
+              <td>Yesterday</td>
+              <td>Here</td>
+              <td>Gay Taylor</td>
+            </tr>
+            <tr>
+              <td>Meating</td>
+              <td>day+1</td>
+              <td>Mexico</td>
+              <td>Chad</td>
+            </tr>
+        </table>
       </div>
     </main>
     {% endblock %}
