@@ -374,7 +374,7 @@ def publicMeetings():
     publicMeetings = db.execute(
         "SELECT * FROM meetings WHERE meeting_public = 1").fetchall()
     publicMeetings = [dict(row) for row in publicMeetings]
-    return apology("publicMeetings.html", publicMeetings=publicMeetings)
+    return render_template("publicMeetings.html", publicMeetings=publicMeetings)
 
 
 @app.route("/meetings/<int:meeting_id>", methods=["GET",
