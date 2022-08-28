@@ -19,7 +19,7 @@
 <main>
   <div class="container">
     <div class="text-center">
-      <h1>{{ meeting[1] }}</h1>
+      <h2>{{ meeting[1] }}</h2>
       <p>Description: {{ meeting[2] }}</p>
       <p>Manager: {{ meeting[3] }}</p>
       <p>Location: {{ meeting[4] }}</p>
@@ -39,7 +39,7 @@
       <button id="HcL34" onclick="clipBoard()" class="btn btn-primary">
         Copy Meeting Link
       </button>
-      <p><a href="/deleteMeeting/{{ meeting[0] }}">Delete Meeting</a></p>
+      <p><a class="error" href="/deleteMeeting/{{ meeting[0] }}">Delete Meeting</a></p>
     </div>
   </div>
 </main>

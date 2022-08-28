@@ -363,15 +363,18 @@ def createMeeting():
     which is stored into a variable called meeting_id."""
 
 
-@app.route("/meetings/")
+@app.route("/publicMeetings/")
 @login_required
-def meetingsSearch():
+def publicMeetings():
     """Page to search for public meetings
 
     Not yet implemented
     """
-
-    return apology("What are you doing here?", "Hello?")
+    db.row_factory = sqlite3.Row
+    publicMeetings = db.execute(
+        "SELECT * FROM meetings WHERE meeting_public = 1").fetchall()
+    publicMeetings = [dict(row) for row in publicMeetings]
+    return render_template("publicMeetings.html", publicMeetings=publicMeetings)
 
 
 @app.route("/meetings/<int:meeting_id>", methods=["GET",

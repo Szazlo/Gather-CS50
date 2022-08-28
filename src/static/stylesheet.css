@@ -1,12 +1,13 @@
 :root {
   --brandcolour: #70B2F3;
+  --redbrand: #f37070;
   --hval: 50px;
 }
 
 body, html {
   background-color: #2D2D3F;
   color: #FFFFFF;
-  height: 100vh;
+  height: 110vh;
 }
 
 header {
@@ -81,10 +82,21 @@ main {
   margin-left: 1em;
 }
 
+.titles {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  margin-left: 1em;
+  padding-top: 1em;
+}
+
 #db-center{
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .meetings {
@@ -116,6 +128,7 @@ footer {
   text-decoration: none;
   padding-top: 2%;
 }
+
 
 a {
   color: var(--brandcolour);
@@ -150,6 +163,21 @@ a {
 #ACd5s {
   color: #6A6A6A;
   cursor: pointer;
+}
+
+.container {
+  margin-top: 1em;
+}
+
+.error {
+  color: var(--redbrand);
+}
+
+#HcL34 {
+  background: var(--brandcolour);
+  border-color: var(--brandcolour);
+  margin-bottom: 1em;
+  margin-top: 1em;
 }
 
 #email {
