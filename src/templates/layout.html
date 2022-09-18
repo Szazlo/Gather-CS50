@@ -39,11 +39,12 @@
   </head>
   <body>
     <header class="logotext">
-      <h1 class="logoremain" onclick="location.href='/'" type="button">Gather</h1>
+      <h1 class="logoremain {% block animationClass %}{% endblock %}" onclick="location.href='/'" type="button">Gather</h1>
     </header>
     {% block main_content %}{% endblock %}
     <footer>&copy; 2022 Gather</footer>
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
     {% block bootstrapJS %}{% endblock %}
+    {% block logoAnimationScript %}{% endblock %}
   </body>
 </html>

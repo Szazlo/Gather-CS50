@@ -22,9 +22,19 @@ header {
   justify-content: center;
 }
 
-#logoremain {
+.logoremain {
   background: transparent;
   border: none;
+  letter-spacing: 1px;
+  font-size: 50px;
+  opacity: 1;
+  transition: all 1s ease-out;
+}
+/* The properties below and above are linked */
+.gather {
+  letter-spacing: 800px;
+  font-size: 70px;
+  opacity: 0;
 }
 
 .welcomepage > p {
@@ -121,14 +131,13 @@ footer {
 
 .logotext {
   color: var(--brandcolour);
-  font-size: 3em;
+  font-size: 5em;
   font-family: "Dancing Script", cursive;
   font-weight: 300;
   text-align: center;
   text-decoration: none;
   padding-top: 2%;
 }
-
 
 a {
   color: var(--brandcolour);

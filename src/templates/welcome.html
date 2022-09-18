@@ -23,3 +23,10 @@
     </div>
 </main>
 {% endblock %}
+
+{% block logoAnimationScript %}
+    <script type="text/javascript" src="{{ url_for('static', filename='logoAnimation.js') }}"></script>
+{% endblock %}
+<!-- The block below is a class I add to an element in layout.
+     I use it so the logo animation is only displayed on this page, as to not annoy users by showing the animation on every refresh and redirect. -->
+{% block animationClass %}gather{% endblock %}
