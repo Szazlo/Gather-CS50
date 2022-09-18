@@ -32,13 +32,14 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
     />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <!-- <link rel="stylesheet" href="{{url_for('static',filename='css/main.css')}}"> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
   </head>
   <body>
     <header class="logotext">
-      <h1 id="logoremain" onclick="location.href='/'" type="button">Gather</h1>
+      <h1 class="logoremain" onclick="location.href='/'" type="button">Gather</h1>
     </header>
     {% block main_content %}{% endblock %}
     <footer>&copy; 2022 Gather</footer>
