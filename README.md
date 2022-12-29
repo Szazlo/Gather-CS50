@@ -10,3 +10,5 @@ Which will (or should) install all the dependencies.
 
 Then, run:
 `python app.py`
+
+## Technical description
