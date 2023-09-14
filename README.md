@@ -1,7 +1,7 @@
 # Gather
 Final collaborative project for Harvard CS50.
 ## Concept
-Gather is a feature packed, event organisation tool to give you peace of mind what ever your are planning next.
+Gather is a feature packed planning app designed to simplify event planning and social engagement; Coordinate event dates that accommodate the schedules of participants and discover a wide array of local public events.
 
 ## How to run
 On the command line, run:
